@@ -1,0 +1,8 @@
+Para que serve:
+ - manage.py
+ - settings.py
+ - views.py
+
+manage.py é usado para gerenciar o projeto.
+settings.py é a configuração global do projeto.
+views.py é
