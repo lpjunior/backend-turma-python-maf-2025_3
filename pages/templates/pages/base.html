@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Meu Site{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <!-- CSS custom -->
+    <style>
+      :root {
+        --nav-height: 64px;
+      }
+
+      body {
+        padding-top: var(--nav-height);
+      }
+
+      header .navbar {
+        min-height: var(--nav-height);
+      }
+
+      main {
+        min-height: calc(100vh - var(--nav-height) - 64px);
+      }
+
+      footer {
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+      }
+
+      .nav-link.active {
+        font-weight: 600;
+      }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+  </head>
+
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" aria-label="Navegação principal">
+        <div class="container">
+          <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
+            <i class="fa-solid fa-globe"></i>
+            <span>Meu Site</span>
+          </a>
+
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarMain"
+            aria-controls="navbarMain"
+            aria-expanded="false"
+            aria-label="Alternar navegação"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
+                   href="{% url 'home' %}">
+                  <i class="fa-solid fa-house me-1"></i>Home
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'sobre' %}active{% endif %}"
+                   href="{% url 'sobre' %}">
+                  <i class="fa-solid fa-circle-info me-1"></i>Sobre
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'contato' %}active{% endif %}"
+                   href="{% url 'contato' %}">
+                  <i class="fa-solid fa-envelope me-1"></i>Contato
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'ajuda' %}active{% endif %}"
+                   href="{% url 'ajuda' %}">
+                  <i class="fa-solid fa-life-ring me-1"></i>Ajuda
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container py-4" role="main">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="py-4">
+      <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+        <small class="text-muted">
+          <i class="fa-regular fa-copyright me-1"></i>
+          {% now "Y" %} Meu Site
+        </small>
+        <small class="text-muted">
+          Feito com Bootstrap e Django
+        </small>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    {% block extra_scripts %}{% endblock %}
+  </body>
+</html>

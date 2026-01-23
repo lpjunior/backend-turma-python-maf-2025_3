@@ -1,8 +1,55 @@
-Para que serve:
- - manage.py
- - settings.py
- - views.py
+### Para que serve cada arquivo no Django ###
 
-manage.py é usado para gerenciar o projeto.
-settings.py é a configuração global do projeto.
-views.py é
+## manage.py
+O manage.py é o ponto de controle do projeto Django.
+
+Ele serve para:
+    - Executar o servidor de desenvolvimento.
+    - Criar apps.
+    - Rodar migrações.
+    - Acessar o shell do Django.
+    - Executar comandos administrativos.
+
+Exemplos de uso:
+    python manage.py runserver
+    python manage.py makemigrations
+    python manage.py migrate
+Ele carrega automaticamente as configurações do projeto e inicializa o Django corretamente.
+
+## settings.py
+O settings.py é o arquivo de configuração global do projeto.
+
+Nele ficam:
+    - Apps instalados.
+    - Configuração de banco de dados.
+    - Configurações de templates.
+    - Middleware.
+    - Configurações de segurança.
+    - Idioma, timezone e arquivos estáticos.
+    - Tudo que afeta o comportamento geral do sistema passa por esse arquivo.
+
+## views.py
+O views.py contém as views do projeto, que são responsáveis por lidar com as requisições HTTP.
+
+Ele faz:
+    - Recebe a requisição do navegador.
+    - Executa a lógica necessária.
+    - Busca ou processa dados.
+    - Retorna uma resposta, HTML, JSON ou redirecionamento.
+
+A view funciona como a ponte entre:
+    - URLs.
+    - Models.
+    - Templates.
+
+## Resumo direto
+Arquivo     |     Responsabilidade
+---------------------------------------------------------------
+manage.py	|     Gerenciar e executar o projeto
+settings.py	|     Configuração global
+views.py	|     Processar requisições e gerar respostas
+
+Frase curta para memorizar
+manage.py controla o projeto
+settings.py define como o projeto funciona
+views.py decide o que o usuário vai receber

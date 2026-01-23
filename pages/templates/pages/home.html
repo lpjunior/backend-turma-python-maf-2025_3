@@ -1,31 +1,44 @@
-<!doctype html>
-<html lang="pt-BR">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Senac Site Online</title>
-  </head>
+{% extends "pages/base.html" %}
 
-  <body>
-    <header>
-      <h1>Senac Site Online</h1>
-      <p>Minha primeira aplicação back-end com Django.</p>
-    </header>
+{% block title %}Home, Senac Site Online{% endblock %}
 
-    <main>
-      <section>
-        <h2>Mensagem do servidor</h2>
-        <p><strong>{{ mensagem }}</strong></p>
-      </section>
-      <section id="contato">
-        <h2>Contato</h2>
-        <p><strong>Nome do aluno: </strong>{{ nome_aluno  }}</p>
-        <p><strong>Curso: </strong>{{ curso }}</p>
-      </section>
-    </main>
+{% block content %}
 
-    <footer>
-      <p>UC3, Back-end com Python e Django.</p>
-    </footer>
-  </body>
-</html>
+<section class="mb-5" aria-labelledby="titulo-mensagem">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h2 id="titulo-mensagem" class="card-title mb-3">
+        <i class="fa-solid fa-server me-2 text-primary"></i>
+        Mensagem do servidor
+      </h2>
+
+      <p class="card-text fs-5">
+        <strong>{{ mensagem }}</strong>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="contato" aria-labelledby="titulo-contato">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h2 id="titulo-contato" class="card-title mb-4">
+        <i class="fa-solid fa-address-card me-2 text-success"></i>
+        Informações do aluno
+      </h2>
+
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          <strong>Nome do aluno:</strong>
+          <span class="ms-1">{{ nome_aluno }}</span>
+        </li>
+        <li class="list-group-item">
+          <strong>Curso:</strong>
+          <span class="ms-1">{{ curso }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "pages/base.html" %}
+
+{% block title %}Ajuda, Senac Site Online{% endblock %}
+
+{% block content %}
+
+<section aria-labelledby="titulo-ajuda">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h1 id="titulo-ajuda" class="card-title mb-3">
+        <i class="fa-solid fa-life-ring me-2 text-warning"></i>
+        Ajuda
+      </h1>
+
+      <p>
+        Caso tenha dúvidas sobre o funcionamento do sistema,
+        utilize as opções abaixo.
+      </p>
+
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          Verifique se o servidor está em execução.
+        </li>
+        <li class="list-group-item">
+          Confirme se as URLs estão corretamente configuradas.
+        </li>
+        <li class="list-group-item">
+          Em caso de erro, consulte o console do Django.
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
