@@ -1,55 +1,152 @@
-### Para que serve cada arquivo no Django ###
+PARA QUE SERVE CADA ARQUIVO NO DJANGO
 
-## manage.py
+=================================
+
+MANAGE.PY
+
 O manage.py é o ponto de controle do projeto Django.
 
 Ele serve para:
-    - Executar o servidor de desenvolvimento.
-    - Criar apps.
-    - Rodar migrações.
-    - Acessar o shell do Django.
-    - Executar comandos administrativos.
+- Executar o servidor de desenvolvimento
+- Criar apps
+- Rodar migrações
+- Acessar o shell do Django
+- Executar comandos administrativos
 
 Exemplos de uso:
-    python manage.py runserver
-    python manage.py makemigrations
-    python manage.py migrate
-Ele carrega automaticamente as configurações do projeto e inicializa o Django corretamente.
+python manage.py runserver
+python manage.py makemigrations
+python manage.py migrate
 
-## settings.py
+Esse arquivo carrega automaticamente as configurações do projeto e inicializa o Django corretamente.
+
+------------------------------------------------------------------------------------------
+
+SETTINGS.PY
 O settings.py é o arquivo de configuração global do projeto.
 
 Nele ficam:
-    - Apps instalados.
-    - Configuração de banco de dados.
-    - Configurações de templates.
-    - Middleware.
-    - Configurações de segurança.
-    - Idioma, timezone e arquivos estáticos.
-    - Tudo que afeta o comportamento geral do sistema passa por esse arquivo.
 
-## views.py
-O views.py contém as views do projeto, que são responsáveis por lidar com as requisições HTTP.
+- Apps instalados
+- Configuração de banco de dados
+- Configurações de templates
+- Middlewares
+- Configurações de segurança
+- Idioma, timezone e arquivos estáticos
 
-Ele faz:
-    - Recebe a requisição do navegador.
-    - Executa a lógica necessária.
-    - Busca ou processa dados.
-    - Retorna uma resposta, HTML, JSON ou redirecionamento.
+Tudo que afeta o comportamento geral do sistema passa por esse arquivo.
 
-A view funciona como a ponte entre:
-    - URLs.
-    - Models.
-    - Templates.
+------------------------------------------------------------------------------------------
 
-## Resumo direto
-Arquivo     |     Responsabilidade
----------------------------------------------------------------
-manage.py	|     Gerenciar e executar o projeto
-settings.py	|     Configuração global
-views.py	|     Processar requisições e gerar respostas
+VIEWS.PY
+O views.py contém as views do projeto, responsáveis por lidar com as requisições HTTP.
 
-Frase curta para memorizar
+A view:
+- Recebe a requisição do navegador
+- Executa a lógica necessária
+- Busca ou processa dados
+- Retorna uma resposta, HTML, JSON ou redirecionamento
+
+A view funciona como ponte entre:
+- URLs
+- Models
+- Templates
+
+RESUMO DIRETO
+
+Arquivo Responsabilidade
+manage.py Gerenciar e executar o projeto
+settings.py Configuração global
+views.py Processar requisições e gerar respostas
+
+Frases curtas para memorizar:
+
 manage.py controla o projeto
 settings.py define como o projeto funciona
 views.py decide o que o usuário vai receber
+
+=================================
+
+DJANGO TEMPLATES
+
+Tipos de template:
+
+Template base ou base template
+Exemplo: base.html
+
+Template filho ou child template
+Exemplos: home.html, contato.html, sobre.html, ajuda.html
+
+Na prática, o template filho herda as tags e blocos definidos no template base.
+
+Dica importante:
+Nunca escrever HTML diretamente no views.py.
+
+Frase curta para memorizar:
+Esse template herda do template base
+
+=================================
+
+FORMULÁRIOS HTML NO DJANGO
+
+1. Para onde os dados vão?
+O atributo action define para qual URL os dados serão enviados.
+
+------------------------------------------------------------------------------------------
+
+2. Como os dados vão?
+
+O atributo method define como os dados serão enviados.
+
+Existem dois métodos principais.
+
+GET
+
+Usado para buscar dados e chamar uma view.
+
+Características:
+
+- Os dados vão na URL
+- São visíveis no navegador
+- Usado para buscas e filtros
+
+Exemplo de URL com GET:
+http://127.0.0.1:8000/pages/contato/?consulta=luis&local=senac
+
+Query string ou query params:
+
+- ? indica o início da query string
+- consulta é a chave
+- luis é o valor
+- & separa os parâmetros
+
+------------------------------------------------------------------------------------------
+
+POST
+
+Usado para enviar dados para uma view. Também pode ser usado para buscar dados, mas não é o padrão.
+
+Características:
+
+- Os dados vão no corpo da requisição
+- Não aparecem na URL
+- Usado para cadastro, login e envio de mensagens
+
+------------------------------------------------------------------------------------------
+
+REGRA BÁSICA
+
+GET buscar, filtrar, consultar
+POST enviar, cadastrar, salvar
+
+3. Como o servidor acessa esses dados?
+
+No Django, os dados chegam na view através do objeto request.
+- Dados enviados via GET ficam em request.GET
+- Dados enviados via POST ficam em request.POST
+
+Exemplo conceitual:
+request.GET['consulta']
+request.POST['email']
+
+Isso permite que a view processe os dados enviados pelo formulário e retorne a resposta adequada.

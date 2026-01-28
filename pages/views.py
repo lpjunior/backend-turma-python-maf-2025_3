@@ -26,9 +26,17 @@ def home(request):
 
 
 def contato(request):
+    if request.method == "POST":
+        nome = request.POST.get("nome")
+        mensagem = request.POST.get("mensagem")
+
+        contexto = {
+            "nome": nome,
+            "mensagem": mensagem
+        }
+        return render(request, 'pages/contato_resultado.html', contexto)
 
     return render(request, 'pages/contato.html')
-
 
 def saudacao(request, nome, idade):
 
