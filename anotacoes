@@ -150,3 +150,10 @@ request.GET['consulta']
 request.POST['email']
 
 Isso permite que a view processe os dados enviados pelo formulário e retorne a resposta adequada.
+
+chamada post
+http://127.0.0.1:8000/pages/alunos/
+
+body(corpo) eu passo um array de nomes
+
+['luis', 'maria', 'pedro', 'joao', ..]

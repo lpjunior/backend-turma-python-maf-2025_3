@@ -6,14 +6,21 @@
 
 <section aria-labelledby="contato-recebido">
   <div class="card shadow-sm">
-    <h2>Mensagem recebida</h2>
-      <p><strong>Nome: </strong> {{ nome }}</p>
-      <p><strong>Mensagem: </strong> {{ mensagem }}</p>
-  </div>
-  <p>
-      <a href="{% url 'contato' %}">Enviar nova mensagem</a>
-  </p>
+    <div class="card-body">
+      <h1 id="contato-recebido" class="card-title mb-3">
+        <i class="fa-solid fa-check-circle me-2 text-success"></i>
+        Mensagem recebida
+      </h1>
 
+      <p class="mb-2">
+        Obrigado, <strong>{{ nome }}</strong>. Sua mensagem foi recebida.
+      </p>
+
+      <a href="{% url 'contato' %}" class="btn btn-outline-primary">
+        Enviar nova mensagem
+      </a>
+    </div>
+  </div>
 </section>
 
 {% endblock %}

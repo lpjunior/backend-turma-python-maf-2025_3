@@ -1,7 +1,13 @@
 from datetime import datetime
 
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+
 from django.http import HttpResponse
 from django.shortcuts import render
+
+from pages.forms import ContatoForm
+
 
 def home(request):
     """
@@ -27,16 +33,22 @@ def home(request):
 
 def contato(request):
     if request.method == "POST":
-        nome = request.POST.get("nome")
-        mensagem = request.POST.get("mensagem")
+        form = ContatoForm(request.POST) # Cria um formulário com os dados do POST
 
-        contexto = {
-            "nome": nome,
-            "mensagem": mensagem
-        }
-        return render(request, 'pages/contato_resultado.html', contexto)
+        if form.is_valid():
+            nome = form.cleaned_data['nome']
+            email = form.cleaned_data['email']
+            mensagem = form.cleaned_data['mensagem']
 
-    return render(request, 'pages/contato.html')
+            # persistir os dados na base..
+
+            return render(request, 'pages/contato_resultado.html', {
+                "nome": nome
+            })
+    else:
+        form = ContatoForm() # Cria um formulário vazio
+
+    return render(request, 'pages/contato.html', { 'form': form })
 
 def saudacao(request, nome, idade):
 
