@@ -12,8 +12,10 @@
         Mensagem recebida
       </h1>
 
-      <p class="mb-2">
-        Obrigado, <strong>{{ nome }}</strong>. Sua mensagem foi recebida.
+      <p>
+        Obrigado, <strong>{{ nome }}</strong>.<br>
+        Recebemos sua mensagem e entraremos em contato pelo email
+        <strong>{{ email }}</strong>.
       </p>
 
       <a href="{% url 'contato' %}" class="btn btn-outline-primary">

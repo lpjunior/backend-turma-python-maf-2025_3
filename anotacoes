@@ -157,3 +157,24 @@ http://127.0.0.1:8000/pages/alunos/
 body(corpo) eu passo um array de nomes
 
 ['luis', 'maria', 'pedro', 'joao', ..]
+
+------------------------------------------------------------------------------------------
+RESPOSTA Atividade 3 - Parte 1:
+
+Parte 1 – Entendendo o Form existente (respostas)
+
+1. Em qual arquivo está definida a classe do formulário?
+No arquivo pages/forms.py.
+
+2. Qual classe do Django ela estende?
+Ela estende forms.Form.
+
+3. Onde ocorre a validação dos dados?
+A validação ocorre:
+
+automaticamente nos campos (required, min_length, EmailField)
+
+nos métodos personalizados clean_<campo>.
+
+4. Em que momento clean_mensagem é executado?
+Durante a chamada de form.is_valid(), após as validações básicas dos campos.

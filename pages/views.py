@@ -32,23 +32,41 @@ def home(request):
 
 
 def contato(request):
-    if request.method == "POST":
-        form = ContatoForm(request.POST) # Cria um formulário com os dados do POST
+    # Se o usuário apenas acessou a página (GET),
+    # criamos um formulário vazio para exibição
+    if request.method == "GET":
+        form = ContatoForm()
 
+    # Se o usuário enviou o formulário (POST),
+    # criamos o formulário com os dados enviados
+    else:
+        form = ContatoForm(request.POST)
+
+        # is_valid executa TODAS as validações do formulário
         if form.is_valid():
+            # cleaned_data contém apenas dados já validados
             nome = form.cleaned_data['nome']
             email = form.cleaned_data['email']
             mensagem = form.cleaned_data['mensagem']
 
-            # persistir os dados na base..
+            # Aqui poderiam ser salvos no banco ou enviados por email
 
-            return render(request, 'pages/contato_resultado.html', {
-                "nome": nome
-            })
-    else:
-        form = ContatoForm() # Cria um formulário vazio
+            return render(
+                request,
+                'pages/contato_resultado.html',
+                {
+                    'nome': nome,
+                    'email': email
+                }
+            )
 
-    return render(request, 'pages/contato.html', { 'form': form })
+    # Se for GET ou se houver erro no POST,
+    # o formulário é reexibido
+    return render(
+        request,
+        'pages/contato.html',
+        {'form': form}
+    )
 
 def saudacao(request, nome, idade):
 
