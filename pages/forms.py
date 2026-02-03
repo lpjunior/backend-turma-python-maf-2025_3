@@ -24,7 +24,7 @@ class ContatoForm(forms.Form):
     mensagem = forms.CharField(
         label='Mensagem',
         min_length=10,
-        max_length=300,  # 🌟 Desafio 1
+        max_length=300,  # Desafio 1
         widget=forms.Textarea(attrs={
             'placeholder': 'Digite sua mensagem',
             'class': 'form-control',
