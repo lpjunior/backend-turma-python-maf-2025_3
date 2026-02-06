@@ -1,36 +1,34 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-class ContatoForm(forms.Form):
-    nome = forms.CharField(
-        label='Nome',
-        min_length=3,
-        required=True,
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Digite seu nome completo',
-            'class': 'form-control'
-        })
-    )
+from pages.models import MensagemContato
 
-    email = forms.EmailField(
-        label='Email',
-        required=True,
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Digite seu email',
-            'class': 'form-control'
-        })
-    )
+class ContatoForm(forms.ModelForm):
+    class Meta:
+        model = MensagemContato
+        fields = ['nome', 'email', 'mensagem']
 
-    mensagem = forms.CharField(
-        label='Mensagem',
-        min_length=10,
-        max_length=300,  # Desafio 1
-        widget=forms.Textarea(attrs={
-            'placeholder': 'Digite sua mensagem',
-            'class': 'form-control',
-            'rows': 4
-        })
-    )
+        widgets = {
+            'nome': forms.TextInput(attrs={
+                'placeholder': 'Digite seu nome completo',
+                'class': 'form-control'
+            }),
+            'email': forms.TextInput(attrs={
+                'placeholder': 'Digite seu email',
+                'class': 'form-control'
+            }),
+            'mensagem': forms.Textarea(attrs={
+                'placeholder': 'Digite sua mensagem',
+                'class': 'form-control',
+                'rows': 4
+            })
+        }
+
+        labels = {
+            'nome': 'Nome',
+            'email': 'Email',
+            'mensagem': 'Mensagem'
+        }
 
     def clean_nome(self):
         nome = self.cleaned_data.get('nome', '').strip()

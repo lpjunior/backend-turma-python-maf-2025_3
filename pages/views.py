@@ -1,9 +1,12 @@
 from datetime import datetime
+from email import message
 
 from django.http import HttpResponse
 from django.shortcuts import render
 
 from pages.forms import ContatoForm
+from pages.models import MensagemContato
+
 
 def home(request):
     """
@@ -43,10 +46,11 @@ def contato(request):
             # cleaned_data contém apenas dados já validados
             nome = form.cleaned_data['nome']
             email = form.cleaned_data['email']
-            mensagem = form.cleaned_data['mensagem']
 
-            # Aqui poderiam ser salvos no banco ou enviados por email
+            # Salva os dados no banco de dados
+            form.save()
 
+            # Exibe uma mensagem de sucesso
             return render(
                 request,
                 'pages/contato_resultado.html',
@@ -77,3 +81,8 @@ def sobre(request):
 
 def ajuda(request):
     return render(request, 'pages/ajuda.html')
+
+def mensagens(request):
+    mensagens = MensagemContato.objects.all()
+    contexto = { 'mensagens': mensagens }
+    return render(request, 'pages/mensagens.html', contexto)
