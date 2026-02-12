@@ -178,3 +178,129 @@ nos métodos personalizados clean_<campo>.
 
 4. Em que momento clean_mensagem é executado?
 Durante a chamada de form.is_valid(), após as validações básicas dos campos.
+
+------------------------------------------------------------------------------------------
+Migrations - São arquivos gerados automaticamente pelo Django para controlar as mudanças no banco de dados. Eles registram as alterações feitas nos modelos (models.py) e permitem aplicar essas mudanças ao banco de dados de forma organizada e reversível.
+
+SQL - Structured Query Language, é a linguagem usada para interagir com bancos de dados relacionais. O Django gera SQL automaticamente a partir dos modelos e migrações, mas também é possível escrever SQL manualmente para consultas complexas ou otimizações específicas.
+Executar as instruções de migração é essencial para manter o banco de dados sincronizado com os modelos definidos no código. O comando python manage.py migrate aplica as migrações pendentes, criando ou alterando tabelas conforme necessário.
+
+
+python manage.py makemigrations - Cria os arquivos de migração com base nas mudanças detectadas nos modelos. (Esses arquivos são equivalentes a queries SQL que descrevem as alterações no banco de dados, como criar ou modificar tabelas e campos.)
+python manage.py migrate - Aplica as migrações ao banco de dados, criando ou alter
+
+DDL - Data Definition Language, é um subconjunto do SQL usado para definir e modificar a estrutura do banco de dados. Ele inclui comandos como CREATE, ALTER e DROP, que permitem criar, alterar ou excluir tabelas e outros objetos do banco de dados. O Django gera DDL automaticamente a partir das migrações, que descrevem as mudanças na estrutura do banco de dados com base nos modelos definidos no código.
+DML - Data Manipulation Language, é um subconjunto do SQL usado para manipular os dados dentro das tabelas do banco de dados. Ele inclui comandos como SELECT, INSERT, UPDATE e DELETE, que permitem consultar, adicionar, modificar e remover registros nas tabelas. O Django gera DML automaticamente a partir das operações realizadas nos modelos, como criar, salvar ou excluir objetos.
+
+
+model:
+class aluno(models.Model):
+    nome = models.CharField(max_length=100)
+    email = models.EmailField(empty=False, unique=True)
+    idade = models.IntegerField()
+
+    def __str__(self):
+        return self.nome
+
+DDL gerado:
+CREATE TABLE aluno (
+    id SERIAL NOT NULL,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(254) NOT NULL,
+    matricula INTEGER NOT NULL,
+    idade INTEGER NOT NULL
+);
+
+ALTER TABLE aluno ADD CONSTRAINT aluno_pkey PRIMARY KEY (id);
+ALTER TABLE ADD CONSTRAINT aluno_email_unique UNIQUE (email);
+ALTER TABLE ADD CONSTRAINT aluno_matricula_unique UNIQUE (matricula);
+CREATE INDEX aluno_email_idx ON aluno (email);
+CREATE INDEX aluno_matricula_idx ON aluno (matricula);
+ALTER TABLE aluno ADD CONSTRAINT aluno_idade_check CHECK (idade >= 0);
+
+- A DDL acima cria a tabela aluno com os campos nome, email e idade, define o id como chave primária e adiciona uma restrição de unicidade no campo email, além de criar um índice para otimizar consultas por email.
+
+O python manage.py makemigrations gera equivalente a DDL, mas em formato de migração do Django, que é um arquivo Python descrevendo as mudanças no modelo. O comando python manage.py migrate aplica essas mudanças ao banco de dados, executando as instruções SQL correspondentes para criar ou modificar as tabelas conforme definido nos modelos.
+O python manage.py migrate - Aplica as migrações pendentes ao banco de dados, criando ou alterando tabelas conforme necessário. Ele executa as instruções SQL geradas pelas migrações para manter o banco de dados sincronizado com os modelos definidos no código.
+
+------------------------------------------------------------------------------------------
+Em uma banco de dados nos temos:
+
+- chaves candidatas: campos que poderiam ser usados como chave primária, mas não são (ex: email)
+- chaves primarias: identificadores únicos para cada registro (ex: id)
+- chaves secundárias/alternativa: campos usados para otimizar consultas, mas não são chaves primárias (ex: índice em email)
+- chaves estrangeiras: relacionam tabelas entre si (ex: aluno_id em uma tabela de matrículas)
+------------------------------------------------------------------------------------------
+
+DDL funcionario x Dependente
+CREATE TABLE funcionario (
+    id SERIAL NOT NULL,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(254) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (email)
+);
+
+CREATE TABLE dependente (
+    id SERIAL NOT NULL,
+    nome VARCHAR(100) NOT NULL,
+    id_funcionario INTEGER,
+    PRIMARY KEY (id),
+    UNIQUE (id_funcionario),
+    FOREIGN KEY (id_funcionario) REFERENCES funcionario(id)
+);
+
+cardinalidade: um funcionario pode ter 0 ou N dependentes, mas um dependente só pode ter 1 funcionario. Portanto, a cardinalidade é de 1 para 0..1.
+1 funcionario <-> 0..N dependentes
+
+Modelos de cardinalidade:
+1 para 1 (OneToOneField) ex: usuário e perfil - Um usuário tem um perfil, e um perfil pertence a um usuário.
+1 para N (OneToManyField) ex: autor e livros - Um autor pode escrever vários livros, mas um livro tem apenas um autor.
+N para 1 (ManyToOneField) ex: comentário e post - Vários comentários podem pertencer a um post, mas um comentário pertence a apenas um post.
+N para N (ManyToManyField) ex: produtos e categorias - Um produto pode pertencer a várias categorias, e uma categoria pode conter vários produtos.
+
+Quando é NxN é necessário criar uma tabela intermediária para armazenar as relações entre os registros das duas tabelas principais. Essa tabela intermediária geralmente contém chaves estrangeiras que apontam para as tabelas principais, permitindo que um registro de uma tabela se relacione com múltiplos registros da outra tabela e vice-versa. No Django, isso é gerenciado automaticamente quando se usa o campo ManyToManyField, que cria essa tabela intermediária nos bastidores.
+
+Produtos x Categorias
+
+uma tabela relação produto_categoria com os campos:
+- id SERIAL NOT NULL -> é opcional, mas recomendado para facilitar a gestão das relações
+- produto_id INTEGER NOT NULL
+- categoria_id INTEGER NOT NULL
+PRIMARY KEY (id)
+FOREIGN KEY (produto_id) REFERENCES produto(id)
+FOREIGN KEY (categoria_id) REFERENCES categoria(id)
+
+1,1
+1,2
+1,3
+2,1
+2,3
+3,2
+3,3
+
+Cardinalidade produto x categoria: um produto pode pertencer a várias categorias, e uma categoria pode conter vários produtos. Portanto, a cardinalidade é de N para N (ManyToMany).
+Produto <-> Categoria (N para N)
+Produto <-> produto_categoria (N para 1)
+Categoria <-> produto_categoria (N para 1)
+
+CREATE TABLE produto (
+    id SERIAL NOT NULL,
+    nome VARCHAR(100) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE categoria (
+    id SERIAL NOT NULL,
+    nome VARCHAR(100) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE produto_categoria (
+    -- id SERIAL NOT NULL, -- Opção 1: opcional, mas recomendado para facilitar a gestão das relações
+    produto_id INTEGER NOT NULL,
+    categoria_id INTEGER NOT NULL,
+    PRIMARY KEY (produto_id, categoria_id), -- Opção 2: Ignorar o campo ID e usar chave primária composta para garantir unicidade na relação
+    FOREIGN KEY (produto_id) REFERENCES produto(id),
+    FOREIGN KEY (categoria_id) REFERENCES categoria(id)
+);
