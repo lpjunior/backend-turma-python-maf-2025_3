@@ -1,0 +1,69 @@
+{% extends "pages/base.html" %}
+
+{% block title %}Pessoas, Senac Site Online{% endblock %}
+
+{% block content %}
+
+<section aria-labelledby="titulo-pessoas" class="container my-4">
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+
+      <header class="d-flex align-items-center mb-4">
+        <i class="fa-solid fa-users fa-lg text-primary me-2"
+           aria-hidden="true"></i>
+        <h1 id="titulo-pessoas" class="h4 mb-0">
+          Pessoas cadastradas
+        </h1>
+      </header>
+
+      {% if pessoas %}
+        <ul class="list-group list-group-flush">
+
+          {% for pessoa in pessoas %}
+            <li class="list-group-item py-3">
+
+              <div class="d-flex justify-content-between align-items-center flex-wrap">
+
+                <div>
+                  <strong class="d-block">
+                    {{ pessoa.nome }}
+                  </strong>
+
+                  <a href="mailto:{{ pessoa.email }}"
+                     class="text-decoration-none text-muted">
+                    {{ pessoa.email }}
+                  </a>
+                </div>
+
+                <span class="badge bg-primary rounded-pill">
+                  {{ pessoa.total_mensagens }} 
+                  {% if pessoa.total_mensagens == 1 %}
+                    mensagem
+                  {% else %}
+                    mensagens
+                  {% endif %}
+                </span>
+
+              </div>
+
+            </li>
+          {% endfor %}
+
+        </ul>
+
+      {% else %}
+
+        <div class="alert alert-info mb-0" role="status">
+          <i class="fa-solid fa-circle-info me-2" aria-hidden="true"></i>
+          Nenhuma pessoa cadastrada até o momento.
+        </div>
+
+      {% endif %}
+
+    </div>
+  </div>
+
+</section>
+
+{% endblock %}

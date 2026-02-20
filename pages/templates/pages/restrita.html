@@ -1,0 +1,28 @@
+{% extends "pages/base.html" %}
+
+{% block title %}Restrita, Senac Site Online{% endblock %}
+
+{% block content %}
+
+<section aria-labelledby="titulo-ajuda">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h1 id="titulo-ajuda" class="card-title mb-3">
+        <i class="fa-solid fa-key me-2 text-danger"></i>
+        Área Restrita
+      </h1>
+
+      <p>
+        Bem-vindo, {{ user.username }}.
+      </p>
+
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          Você está autenticado no sistema.
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -87,9 +87,44 @@
               <li class="nav-item">
                 <a class="nav-link {% if request.resolver_match.url_name == 'contato' %}active{% endif %}"
                    href="{% url 'contato' %}">
-                  <i class="fa-solid fa-envelope me-1"></i>Contato
+                  <i class="fa-solid fa-at me-1"></i>Contato
                 </a>
               </li>
+
+
+            {% if user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'area_restrita' %}active{% endif %}"
+                   href="{% url 'area_restrita' %}">
+                  <i class="fa-solid fa-key me-1"></i>Área Restrita
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'mensagens' %}active{% endif %}"
+                   href="{% url 'mensagens' %}">
+                  <i class="fa-solid fa-envelope me-1"></i>Mensagens
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'pessoas' %}active{% endif %}"
+                   href="{% url 'pessoas' %}">
+                  <i class="fa-solid fa-person me-1"></i>Pessoas
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'logout' %}active{% endif %}"
+                   href="{% url 'logout' %}">
+                  <i class="fa-solid fa-arrow-right-from-bracket me-1"></i>Logout
+                </a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'login' %}active{% endif %}"
+                   href="{% url 'login' %}">
+                  <i class="fa-solid fa-arrow-right-to-bracket me-1"></i>Login
+                </a>
+              </li>
+            {% endif %}
 
               <li class="nav-item">
                 <a class="nav-link {% if request.resolver_match.url_name == 'ajuda' %}active{% endif %}"
