@@ -1,15 +1,18 @@
+import logging
+
 from django.contrib.auth import authenticate, login, logout # funções para autenticação de usuários
-from django.contrib.auth.decorators import login_required # decorator para restringir o acesso a uma view apenas para usuários autenticados
+from django.contrib.auth.decorators import login_required, permission_required # decorators para restringir o acesso a views apenas para usuários autenticados ou com permissões específicas
 
 from datetime import datetime # módulo para trabalhar com datas e horas
 
 from django.db.models import Count # função para realizar contagem de objetos relacionados em uma consulta ao banco de dados (ex: contar quantas mensagens cada pessoa tem)
-from django.http import HttpResponse # classe para criar respostas HTTP personalizadas
+from django.http import HttpResponse, HttpResponseForbidden  # classe para criar respostas HTTP personalizadas
 from django.shortcuts import render, redirect # funções para renderizar templates e redirecionar para outras URLs
 
 from pages.forms import ContatoForm # formulário para contato, definido em pages/forms.py
 from pages.models import MensagemContato, Pessoa # modelos para mensagens de contato e pessoas, definidos em pages/models.py
 
+logger = logging.getLogger(__name__)
 
 def home(request):
     """
@@ -85,13 +88,19 @@ def sobre(request):
 def ajuda(request):
     return render(request, 'pages/ajuda.html')
 
-@login_required
+@permission_required(
+    'pages.view_mensagemcontato', # permissão necessária para acessar essa view
+    raise_exception=True
+) # app_label.codename estrutura padrão do nome da permissão, onde 'pages' é o nome da app e 'view_mensagemcontato' é a permissão de visualização do modelo MensagemContato. Se um usuário tentar acessar essa view sem ter a permissão necessária, uma exceção será levantada (raise_exception=True) e ele receberá uma resposta de erro (403 Forbidden).
 def mensagens(request):
     mensagens = MensagemContato.objects.all()
     contexto = { 'mensagens': mensagens }
     return render(request, 'pages/mensagens.html', contexto)
 
-@login_required
+@permission_required(
+    'pages.view_pessoa',
+    raise_exception=True
+)
 def pessoas(request):
     """
     Essa view é para exibir a lista de pessoas cadastradas no banco de dados.
@@ -131,3 +140,24 @@ def logout_view(request):
 def area_restrita(request):
     # A view de área restrita é decorada com @login_required, o que significa que apenas usuários autenticados podem acessá-la. Se um usuário não autenticado tentar acessar essa view, ele será redirecionado para a página de login.
     return render(request, 'pages/restrita.html')
+
+def erro_403(request, exception=None):
+    try:
+        if exception:
+            logger.warning(
+                "Erro 403 | Usuário: %s | Path: %s | Detalhes: %s",
+                request.user.username if request.user.is_authenticated else 'Anônimo',
+                request.path,
+                str(exception)
+            )
+
+        return render(request, 'pages/403.html', status=403)
+    except Exception as e:
+        logger.warning(
+            "Falha ao renderizar página 403 | Usuário: %s | Path: %s | Detalhes do erro: %s",
+            request.user.username if request.user.is_authenticated else 'Anônimo',
+            request.path,
+            str(exception)
+        )
+
+        return HttpResponseForbidden("Acesso negado. Você não tem permissão para acessar esta página.")

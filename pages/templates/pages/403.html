@@ -1,0 +1,23 @@
+{% extends "pages/base.html" %}
+
+{% block title %}Não autorizado, Senac Site Online{% endblock %}
+
+{% block content %}
+
+<section aria-labelledby="titulo-nao-autorizado">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h1 id="titulo-nao-autorizado" class="card-title mb-3">
+        <i class="fa-solid fa-lock me-2 text-danger"></i>
+        Não autorizado
+      </h1>
+
+      <p>
+        Você não possui permissão para acessar está página. Por favor, entre em contato com o administrador do sistema para obter acesso.
+      </p>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

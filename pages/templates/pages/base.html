@@ -91,7 +91,6 @@
                 </a>
               </li>
 
-
             {% if user.is_authenticated %}
               <li class="nav-item">
                 <a class="nav-link {% if request.resolver_match.url_name == 'area_restrita' %}active{% endif %}"
@@ -99,18 +98,22 @@
                   <i class="fa-solid fa-key me-1"></i>Área Restrita
                 </a>
               </li>
+            {% if perms.pages.view_mensagemcontato %}
               <li class="nav-item">
                 <a class="nav-link {% if request.resolver_match.url_name == 'mensagens' %}active{% endif %}"
                    href="{% url 'mensagens' %}">
                   <i class="fa-solid fa-envelope me-1"></i>Mensagens
                 </a>
               </li>
+            {% endif %}
+            {% if perms.pages.view_pessoa %}
               <li class="nav-item">
                 <a class="nav-link {% if request.resolver_match.url_name == 'pessoas' %}active{% endif %}"
                    href="{% url 'pessoas' %}">
                   <i class="fa-solid fa-person me-1"></i>Pessoas
                 </a>
               </li>
+            {% endif %}
               <li class="nav-item">
                 <a class="nav-link {% if request.resolver_match.url_name == 'logout' %}active{% endif %}"
                    href="{% url 'logout' %}">
