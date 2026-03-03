@@ -1,44 +1,75 @@
 {% extends "pages/base.html" %}
 
-{% block title %}Home, Senac Site Online{% endblock %}
+{% block title %}Home | Senac Site Online{% endblock %}
 
 {% block content %}
 
-<section class="mb-5" aria-labelledby="titulo-mensagem">
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <h2 id="titulo-mensagem" class="card-title mb-3">
-        <i class="fa-solid fa-server me-2 text-primary"></i>
-        Mensagem do servidor
-      </h2>
+<div class="container my-5">
 
-      <p class="card-text fs-5">
-        <strong>{{ mensagem }}</strong>
-      </p>
+  <!-- Mensagem do servidor -->
+  <section class="mb-5" aria-labelledby="titulo-mensagem">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+
+        <header class="d-flex align-items-center mb-3">
+          <i class="fa-solid fa-server fa-lg text-primary me-2"></i>
+          <h2 id="titulo-mensagem" class="h5 mb-0 fw-semibold">
+            Mensagem do servidor
+          </h2>
+        </header>
+
+        <div class="bg-light rounded p-4 text-center">
+          <p class="fs-4 fw-bold text-primary mb-0">
+            {{ mensagem }}
+          </p>
+        </div>
+
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="contato" aria-labelledby="titulo-contato">
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <h2 id="titulo-contato" class="card-title mb-4">
-        <i class="fa-solid fa-address-card me-2 text-success"></i>
-        Informações do aluno
-      </h2>
+  <!-- Informações do aluno -->
+  <section aria-labelledby="titulo-contato">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
 
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item">
-          <strong>Nome do aluno:</strong>
-          <span class="ms-1">{{ nome_aluno }}</span>
-        </li>
-        <li class="list-group-item">
-          <strong>Curso:</strong>
-          <span class="ms-1">{{ curso }}</span>
-        </li>
-      </ul>
+        <header class="d-flex align-items-center mb-4">
+          <i class="fa-solid fa-address-card fa-lg text-success me-2"></i>
+          <h2 id="titulo-contato" class="h5 mb-0 fw-semibold">
+            Informações do aluno
+          </h2>
+        </header>
+
+        <div class="row g-4">
+
+          <div class="col-md-6">
+            <div class="border rounded p-3 bg-light h-100">
+              <small class="text-muted d-block mb-1">
+                Nome do aluno
+              </small>
+              <span class="fw-semibold">
+                {{ nome_aluno }}
+              </span>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="border rounded p-3 bg-light h-100">
+              <small class="text-muted d-block mb-1">
+                Curso
+              </small>
+              <span class="fw-semibold">
+                {{ curso }}
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+
+</div>
 
 {% endblock %}

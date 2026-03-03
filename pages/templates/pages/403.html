@@ -1,23 +1,46 @@
 {% extends "pages/base.html" %}
 
-{% block title %}Não autorizado, Senac Site Online{% endblock %}
+{% block title %}Não autorizado | Senac Site Online{% endblock %}
 
 {% block content %}
 
-<section aria-labelledby="titulo-nao-autorizado">
-  <div class="card shadow-sm">
+<section aria-labelledby="titulo-nao-autorizado" class="d-flex align-items-center justify-content-center py-5">
+
+  <div class="card border-0 shadow-sm text-center p-4" style="max-width: 520px; width: 100%;">
+
     <div class="card-body">
-      <h1 id="titulo-nao-autorizado" class="card-title mb-3">
-        <i class="fa-solid fa-lock me-2 text-danger"></i>
-        Não autorizado
+
+      <div class="mb-4">
+        <i class="fa-solid fa-lock fa-3x text-danger"></i>
+      </div>
+
+      <h1 id="titulo-nao-autorizado" class="h4 fw-semibold mb-3">
+        Acesso não autorizado
       </h1>
 
-      <p>
-        Você não possui permissão para acessar está página. Por favor, entre em contato com o administrador do sistema para obter acesso.
+      <p class="text-muted mb-4">
+        Você não possui permissão para acessar esta página.
+        Caso necessário, entre em contato com o administrador do sistema.
       </p>
 
+      <div class="d-flex justify-content-center gap-2 flex-wrap">
+        <a href="{% url 'home' %}" class="btn btn-primary px-4">
+          <i class="fa-solid fa-house me-1"></i>
+          Voltar para a Home
+        </a>
+
+        {% if not user.is_authenticated %}
+        <a href="{% url 'login' %}" class="btn btn-outline-secondary px-4">
+          <i class="fa-solid fa-arrow-right-to-bracket me-1"></i>
+          Fazer login
+        </a>
+        {% endif %}
+      </div>
+
     </div>
+
   </div>
+
 </section>
 
 {% endblock %}

@@ -60,3 +60,46 @@ class ContatoForm(forms.ModelForm):
         )
 
         return pessoa
+
+class PessoaForm(forms.ModelForm):
+    class Meta:
+        model = Pessoa
+        fields = ['nome', 'email']
+        widgets = {
+            'nome': forms.TextInput(attrs={
+                'placeholder': 'Digite seu nome completo',
+                'class': 'form-control'
+            }),
+            'email': forms.EmailInput(attrs={
+                'placeholder': 'Digite seu email',
+                'class': 'form-control'
+            })
+        }
+
+    def clean_nome(self):
+        nome = (self.cleaned_data.get('nome', '') or '').strip()
+
+        if len(nome) < 3:
+            raise forms.ValidationError('O nome deve conter pelo menos 3 caracteres.')
+
+        if len(nome.split()) < 2:
+            raise forms.ValidationError('Informe o nome completo, nome e sobrenome.')
+
+        return nome
+
+    def clean_email(self):
+        email = (self.cleaned_data.get('email', '') or '').strip().lower()
+
+        if not email:
+            raise forms.ValidationError('O email é obrigatório.')
+
+        qs = Pessoa.objects.filter(email=email)
+
+        # Se for edição, excluir o próprio registro da verificação
+        if self.instance.pk:
+            qs = qs.exclude(pk=self.instance.pk)
+
+        if qs.exists():
+            raise forms.ValidationError('Este email já está em uso.')
+
+        return email

@@ -7,9 +7,10 @@ from datetime import datetime # módulo para trabalhar com datas e horas
 
 from django.db.models import Count # função para realizar contagem de objetos relacionados em uma consulta ao banco de dados (ex: contar quantas mensagens cada pessoa tem)
 from django.http import HttpResponse, HttpResponseForbidden  # classe para criar respostas HTTP personalizadas
-from django.shortcuts import render, redirect # funções para renderizar templates e redirecionar para outras URLs
+from django.shortcuts import render, redirect, \
+    get_object_or_404  # funções para renderizar templates e redirecionar para outras URLs
 
-from pages.forms import ContatoForm # formulário para contato, definido em pages/forms.py
+from pages.forms import ContatoForm, PessoaForm  # formulário para contato, definido em pages/forms.py
 from pages.models import MensagemContato, Pessoa # modelos para mensagens de contato e pessoas, definidos em pages/models.py
 
 logger = logging.getLogger(__name__)
@@ -161,3 +162,50 @@ def erro_403(request, exception=None):
         )
 
         return HttpResponseForbidden("Acesso negado. Você não tem permissão para acessar esta página.")
+
+@permission_required(
+    'pages.add_pessoa',
+    raise_exception=True
+)
+def pessoa_create(request):
+    if request.method == "POST":
+        form = PessoaForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('pessoas')
+    else:
+        form = PessoaForm()
+
+    return render(request, 'pages/pessoa_form.html', {'form': form, "acao": "Criar"})
+
+@permission_required(
+    'pages.change_pessoa',
+    raise_exception=True
+)
+def pessoa_update(request, pessoa_id):
+    pessoa = get_object_or_404(Pessoa, id=pessoa_id)
+
+    if request.method == "POST":
+        form = PessoaForm(request.POST, instance=pessoa)
+
+        if form.is_valid():
+            form.save()
+            return redirect('pessoas')
+    else:
+        form = PessoaForm(instance=pessoa)
+
+    return render(request, 'pages/pessoa_form.html', {'form': form, "acao": "Editar"})
+
+@permission_required(
+    'pages.delete_pessoa',
+    raise_exception=True
+)
+def pessoa_delete(request, pessoa_id):
+    pessoa = get_object_or_404(Pessoa, id=pessoa_id)
+
+    if request.method == "POST":
+        pessoa.delete()
+        return redirect('pessoas')
+
+    return render(request, 'pages/pessoa_confirm_delete.html', {'pessoa': pessoa})

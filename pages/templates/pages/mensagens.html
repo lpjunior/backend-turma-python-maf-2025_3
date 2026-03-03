@@ -1,55 +1,75 @@
 {% extends "pages/base.html" %}
 
-{% block title %}Mensagens de Contato, Senac Site Online{% endblock %}
+{% block title %}Mensagens de Contato | Senac Site Online{% endblock %}
 
 {% block content %}
 
-<section aria-labelledby="titulo-mensagens" class="container my-4">
+<section aria-labelledby="titulo-mensagens" class="container my-5">
 
-  <div class="card shadow-sm">
-    <div class="card-body">
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
 
-      <header class="d-flex align-items-center mb-4">
-        <i class="fa-solid fa-envelope-open-text fa-lg text-success me-2"
-           aria-hidden="true"></i>
-        <h1 id="titulo-mensagens" class="h4 mb-0">
-          Mensagens recebidas
-        </h1>
+      <!-- Cabeçalho -->
+      <header class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+        <div class="d-flex align-items-center">
+          <i class="fa-solid fa-envelope-open-text fa-lg text-success me-2"></i>
+          <h1 id="titulo-mensagens" class="h4 mb-0 fw-semibold">
+            Mensagens recebidas
+          </h1>
+        </div>
+
+        <span class="badge bg-success bg-opacity-10 text-success px-3 py-2">
+          {{ mensagens|length }} recebida{% if mensagens|length != 1 %}s{% endif %}
+        </span>
       </header>
 
       {% if mensagens %}
-        <ul class="list-group list-group-flush">
+
+        <div class="list-group list-group-flush">
 
           {% for msg in mensagens %}
-            <li class="list-group-item py-3">
+            <div class="list-group-item py-4">
 
-              <div class="d-flex justify-content-between align-items-start flex-wrap">
+              <!-- Linha superior -->
+              <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-2">
+
                 <div>
-                  <strong class="d-block">{{ msg.pessoa.nome }}</strong>
+                  <h2 class="h6 mb-1 fw-bold text-dark">
+                    {{ msg.pessoa.nome }}
+                  </h2>
+
                   <a href="mailto:{{ msg.pessoa.email }}"
-                     class="text-decoration-none text-muted">
+                     class="text-muted small text-decoration-none">
                     {{ msg.pessoa.email }}
                   </a>
                 </div>
 
                 <small class="text-muted">
+                  <i class="fa-regular fa-clock me-1"></i>
                   {{ msg.data_envio|date:"d/m/Y H:i" }}
                 </small>
+
               </div>
 
-              <p class="mt-2 mb-0">
-                {{ msg.mensagem }}
-              </p>
+              <!-- Corpo da mensagem -->
+              <div class="bg-light rounded p-3">
+                <p class="mb-0 text-secondary">
+                  {{ msg.mensagem }}
+                </p>
+              </div>
 
-            </li>
+            </div>
           {% endfor %}
 
-        </ul>
+        </div>
+
       {% else %}
-        <div class="alert alert-info mb-0" role="status">
-          <i class="fa-solid fa-circle-info me-2" aria-hidden="true"></i>
+
+        <div class="alert alert-info d-flex align-items-center mb-0">
+          <i class="fa-solid fa-circle-info me-2"></i>
           Nenhuma mensagem de contato foi recebida até o momento.
         </div>
+
       {% endif %}
 
     </div>

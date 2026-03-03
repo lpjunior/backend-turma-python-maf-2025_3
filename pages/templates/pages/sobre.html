@@ -1,28 +1,63 @@
 {% extends "pages/base.html" %}
 
-{% block title %}Sobre, Senac Site Online{% endblock %}
+{% block title %}Sobre | Senac Site Online{% endblock %}
 
 {% block content %}
 
-<section aria-labelledby="titulo-sobre">
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <h1 id="titulo-sobre" class="card-title mb-3">
-        <i class="fa-solid fa-circle-info me-2 text-info"></i>
-        Sobre o projeto
-      </h1>
+<section aria-labelledby="titulo-sobre" class="container my-5 d-flex justify-content-center">
 
-      <p>
+  <div class="card border-0 shadow-sm w-100" style="max-width: 800px;">
+
+    <div class="card-body p-4">
+
+      <!-- Cabeçalho -->
+      <header class="d-flex align-items-center mb-4">
+        <i class="fa-solid fa-circle-info fa-lg text-info me-2"></i>
+        <h1 id="titulo-sobre" class="h4 mb-0 fw-semibold">
+          Sobre o projeto
+        </h1>
+      </header>
+
+      <!-- Descrição principal -->
+      <p class="text-muted mb-4">
         Este site foi desenvolvido como parte das atividades da UC3,
         utilizando Python, Django e boas práticas de desenvolvimento web.
       </p>
 
-      <p class="mb-0">
-        O objetivo do projeto é aplicar conceitos de back-end,
-        organização de código e integração com templates.
-      </p>
+      <!-- Objetivos -->
+      <div class="row g-4">
+
+        <div class="col-md-6">
+          <div class="border rounded p-3 h-100 bg-light">
+            <div class="d-flex align-items-center mb-2">
+              <i class="fa-solid fa-code text-primary me-2"></i>
+              <h2 class="h6 mb-0 fw-semibold">Tecnologias utilizadas</h2>
+            </div>
+            <p class="mb-0 text-muted">
+              Python, Django, Bootstrap 5 e integração com templates dinâmicos.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="border rounded p-3 h-100 bg-light">
+            <div class="d-flex align-items-center mb-2">
+              <i class="fa-solid fa-lightbulb text-warning me-2"></i>
+              <h2 class="h6 mb-0 fw-semibold">Objetivo do projeto</h2>
+            </div>
+            <p class="mb-0 text-muted">
+              Aplicar conceitos de back-end, organização de código,
+              autenticação, permissões e integração entre views e templates.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
     </div>
+
   </div>
+
 </section>
 
 {% endblock %}

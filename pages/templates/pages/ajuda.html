@@ -1,35 +1,61 @@
 {% extends "pages/base.html" %}
 
-{% block title %}Ajuda, Senac Site Online{% endblock %}
+{% block title %}Ajuda | Senac Site Online{% endblock %}
 
 {% block content %}
 
-<section aria-labelledby="titulo-ajuda">
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <h1 id="titulo-ajuda" class="card-title mb-3">
-        <i class="fa-solid fa-life-ring me-2 text-warning"></i>
-        Ajuda
-      </h1>
+<section aria-labelledby="titulo-ajuda" class="container my-5 d-flex justify-content-center">
 
-      <p>
+  <div class="card border-0 shadow-sm w-100" style="max-width: 720px;">
+
+    <div class="card-body p-4">
+
+      <!-- Cabeçalho -->
+      <header class="d-flex align-items-center mb-3">
+        <i class="fa-solid fa-life-ring fa-lg text-warning me-2"></i>
+        <h1 id="titulo-ajuda" class="h4 mb-0 fw-semibold">
+          Central de Ajuda
+        </h1>
+      </header>
+
+      <!-- Descrição -->
+      <p class="text-muted mb-4">
         Caso tenha dúvidas sobre o funcionamento do sistema,
-        utilize as opções abaixo.
+        consulte as orientações abaixo antes de entrar em contato com o suporte.
       </p>
 
+      <!-- Lista de orientações -->
       <ul class="list-group list-group-flush">
-        <li class="list-group-item">
-          Verifique se o servidor está em execução.
+
+        <li class="list-group-item d-flex align-items-start gap-2 py-3">
+          <i class="fa-solid fa-server text-primary mt-1"></i>
+          <span>Verifique se o servidor está em execução.</span>
         </li>
-        <li class="list-group-item">
-          Confirme se as URLs estão corretamente configuradas.
+
+        <li class="list-group-item d-flex align-items-start gap-2 py-3">
+          <i class="fa-solid fa-link text-primary mt-1"></i>
+          <span>Confirme se as URLs estão corretamente configuradas.</span>
         </li>
-        <li class="list-group-item">
-          Em caso de erro, consulte o console do Django.
+
+        <li class="list-group-item d-flex align-items-start gap-2 py-3">
+          <i class="fa-solid fa-terminal text-primary mt-1"></i>
+          <span>Em caso de erro, consulte o console do Django para identificar possíveis mensagens de exceção.</span>
         </li>
+
       </ul>
+
+      <!-- Rodapé opcional -->
+      <div class="mt-4 text-center">
+        <a href="{% url 'contato' %}" class="btn btn-outline-primary px-4">
+          <i class="fa-solid fa-envelope me-1"></i>
+          Falar com o suporte
+        </a>
+      </div>
+
     </div>
+
   </div>
+
 </section>
 
 {% endblock %}

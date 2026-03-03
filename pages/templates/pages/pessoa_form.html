@@ -1,0 +1,61 @@
+{% extends "pages/base.html" %}
+
+{% block title %}{{ acao }}Pessoa, Senac Site Online{% endblock %}
+
+{% block content %}
+
+<section aria-labelledby="titulo-pessoa-form" class="container my-4">
+  <div class="card shadow-sm">
+    <div class="card-body">
+
+      <header class="d-flex align-items-center justify-content-between mb-4">
+        <h1 id="titulo-pessoa-form" class="h4 mb-0">
+          <i class="fa-solid fa-id-card me-2 text-primary"></i>
+          {{ acao }} Pessoa
+        </h1>
+
+          <a href="{% url 'pessoas' %}" class="btn btn-sm btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left me-2" aria-hidden="true"></i>
+            Voltar
+          </a>
+      </header>
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger" role="alert">
+          {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.nome.label }}"></label>
+          {{ form.nome }}
+            {% if form.nome.errors %}
+                <div class="text-danger small mt-1">
+                    {{ form.nome.errors }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.email.label }}"></label>
+          {{ form.email }}
+            {% if form.email.errors %}
+                <div class="text-danger small mt-1">
+                    {{ form.email.errors }}
+                </div>
+            {% endif %}
+        </div>
+
+        <button class="btn btn-primary" type="submit">
+            <i class="fa-solid fa-floppy-disk me-2" aria-hidden="true"></i>
+            Salvar
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

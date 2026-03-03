@@ -1,7 +1,8 @@
 from django.contrib import admin
 from .models import Pessoa, MensagemContato
 
-@admin.register(Pessoa)
+
+@admin.register(Pessoa) # Registrar o modelo Pessoa no admin. É equivalente a admin.site.register(Pessoa)
 class PessoaAdmin(admin.ModelAdmin):
     list_display = ('nome', 'email', 'total_mensagens')
     search_fields = ('nome', 'email')

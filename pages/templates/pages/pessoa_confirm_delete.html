@@ -1,0 +1,52 @@
+{% extends "pages/base.html" %}
+
+{% block title %}Excluir pessoa, Senac Site Online{% endblock %}
+
+{% block content %}
+
+<section class="container my-4" aria-labelledby="titulo-excluir-pessoa">
+  <div class="card shadow-sm border-danger">
+    <div class="card-body">
+
+      <h1 id="titulo-excluir-pessoa" class="h4 mb-3 text-danger">
+        <i class="fa-solid fa-triangle-exclamation me-2" aria-hidden="true"></i>
+        Confirmar exclusão
+      </h1>
+
+      <p class="mb-3">
+        Você tem certeza que deseja excluir a pessoa abaixo?
+      </p>
+      <ul class="list-group mb-3">
+        <li class="list-group-item">
+          <strong>Nome:</strong>
+          <span class="ms-1">{{ pessoa.nome }}</span>
+        </li>
+        <li class="list-group-item">
+          <strong>Email:</strong>
+          <span class="ms-1">{{ pessoa.email }}</span>
+        </li>
+      </ul>
+
+      <div class="alert alert-warning" role="alert">
+        <i class="fa-solid fa-circle-info me-2" aria-hidden="true"></i>
+        Ao excluir esta pessoa, todas as mensagens associadas a ela também serão removidas.
+      </div>
+
+      <form method="post" class="d-flex gap-2">
+        {% csrf_token %}
+
+        <button class="btn btn-danger" type="submit">
+          <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
+          Excluir
+        </button>
+
+        <a href="{% url 'pessoas' %}" class="btn btn-outline-secondary">
+          <i class="fa-solid fa-xmark me-2" aria-hidden="true"></i>
+          Cancelar
+        </a>
+      </form>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

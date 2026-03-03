@@ -1,61 +1,99 @@
 {% extends "pages/base.html" %}
 
-{% block title %}Pessoas, Senac Site Online{% endblock %}
+{% block title %}Pessoas | Senac Site Online{% endblock %}
 
 {% block content %}
 
-<section aria-labelledby="titulo-pessoas" class="container my-4">
+<section aria-labelledby="titulo-pessoas" class="container my-5">
 
-  <div class="card shadow-sm">
-    <div class="card-body">
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
 
-      <header class="d-flex align-items-center mb-4">
-        <i class="fa-solid fa-users fa-lg text-primary me-2"
-           aria-hidden="true"></i>
-        <h1 id="titulo-pessoas" class="h4 mb-0">
-          Pessoas cadastradas
-        </h1>
+      <!-- Cabeçalho -->
+      <header class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+
+        <div class="d-flex align-items-center">
+          <i class="fa-solid fa-users fa-lg text-primary me-2"></i>
+          <h1 id="titulo-pessoas" class="h4 mb-0 fw-semibold">
+            Pessoas cadastradas
+          </h1>
+        </div>
+
+        {% if perms.pages.add_pessoa %}
+          <a href="{% url 'pessoa_create' %}" class="btn btn-primary btn-sm px-3">
+            <i class="fa-solid fa-plus me-1"></i>
+            Adicionar Pessoa
+          </a>
+        {% endif %}
+
       </header>
 
       {% if pessoas %}
-        <ul class="list-group list-group-flush">
+
+        <div class="list-group list-group-flush">
 
           {% for pessoa in pessoas %}
-            <li class="list-group-item py-3">
+            <div class="list-group-item py-4">
 
-              <div class="d-flex justify-content-between align-items-center flex-wrap">
+              <div class="row align-items-center gy-3">
 
-                <div>
-                  <strong class="d-block">
+                <!-- Dados da pessoa -->
+                <div class="col-md-5">
+                  <h2 class="h6 mb-1 fw-bold text-dark">
                     {{ pessoa.nome }}
-                  </strong>
-
+                  </h2>
                   <a href="mailto:{{ pessoa.email }}"
-                     class="text-decoration-none text-muted">
+                     class="text-muted small text-decoration-none">
                     {{ pessoa.email }}
                   </a>
                 </div>
 
-                <span class="badge bg-primary rounded-pill">
-                  {{ pessoa.total_mensagens }} 
-                  {% if pessoa.total_mensagens == 1 %}
-                    mensagem
-                  {% else %}
-                    mensagens
-                  {% endif %}
-                </span>
+                <!-- Quantidade de mensagens -->
+                <div class="col-md-3 text-md-center">
+                  <span class="badge bg-primary bg-opacity-90 px-3 py-2 rounded-pill">
+                    {{ pessoa.total_mensagens }}
+                    {% if pessoa.total_mensagens == 1 %}
+                      mensagem
+                    {% else %}
+                      mensagens
+                    {% endif %}
+                  </span>
+                </div>
+
+                <!-- Ações -->
+                <div class="col-md-4 text-md-end">
+                  <div class="d-flex justify-content-md-end gap-2 flex-wrap">
+
+                    {% if perms.pages.change_pessoa %}
+                      <a href="{% url 'pessoa_update' pessoa.pk %}"
+                         class="btn btn-outline-secondary btn-sm px-3">
+                        <i class="fa-solid fa-pen-to-square me-1"></i>
+                        Editar
+                      </a>
+                    {% endif %}
+
+                    {% if perms.pages.delete_pessoa %}
+                      <a href="{% url 'pessoa_delete' pessoa.pk %}"
+                         class="btn btn-outline-danger btn-sm px-3">
+                        <i class="fa-solid fa-trash me-1"></i>
+                        Excluir
+                      </a>
+                    {% endif %}
+
+                  </div>
+                </div>
 
               </div>
 
-            </li>
+            </div>
           {% endfor %}
 
-        </ul>
+        </div>
 
       {% else %}
 
-        <div class="alert alert-info mb-0" role="status">
-          <i class="fa-solid fa-circle-info me-2" aria-hidden="true"></i>
+        <div class="alert alert-info d-flex align-items-center mb-0">
+          <i class="fa-solid fa-circle-info me-2"></i>
           Nenhuma pessoa cadastrada até o momento.
         </div>
 

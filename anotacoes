@@ -304,3 +304,13 @@ CREATE TABLE produto_categoria (
     FOREIGN KEY (produto_id) REFERENCES produto(id),
     FOREIGN KEY (categoria_id) REFERENCES categoria(id)
 );
+
+
+CRUD - Create, Read/Retrieve, Update, Delete são as operações básicas para manipular dados em um banco de dados. No Django, essas operações são realizadas através dos modelos (models.py) e suas instâncias.
+
+
+permissões automaticas para Pessoa:
+- pages.add_pessoa
+- pages.change_pessoa
+- pages.delete_pessoa
+- pages.view_pessoa

@@ -1,28 +1,43 @@
 {% extends "pages/base.html" %}
 
-{% block title %}Restrita, Senac Site Online{% endblock %}
+{% block title %}Área Restrita | Senac Site Online{% endblock %}
 
 {% block content %}
 
-<section aria-labelledby="titulo-ajuda">
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <h1 id="titulo-ajuda" class="card-title mb-3">
-        <i class="fa-solid fa-key me-2 text-danger"></i>
-        Área Restrita
-      </h1>
+<section aria-labelledby="titulo-area-restrita" class="container my-5 d-flex justify-content-center">
 
-      <p>
-        Bem-vindo, {{ user.username }}.
-      </p>
+  <div class="card border-0 shadow-sm w-100" style="max-width: 720px;">
 
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item">
-          Você está autenticado no sistema.
-        </li>
-      </ul>
+    <div class="card-body p-4">
+
+      <!-- Cabeçalho -->
+      <header class="d-flex align-items-center mb-4">
+        <i class="fa-solid fa-key fa-lg text-danger me-2"></i>
+        <h1 id="titulo-area-restrita" class="h4 mb-0 fw-semibold">
+          Área Restrita
+        </h1>
+      </header>
+
+      <!-- Saudação -->
+      <div class="bg-light rounded p-4 mb-4">
+        <h2 class="h6 text-muted mb-2">Usuário autenticado</h2>
+        <p class="mb-0 fs-5">
+          Bem-vindo, <strong>{{ user.username }}</strong>.
+        </p>
+      </div>
+
+      <!-- Informações -->
+      <div class="border rounded p-3">
+        <div class="d-flex align-items-center gap-2">
+          <i class="fa-solid fa-circle-check text-success"></i>
+          <span>Você está autenticado no sistema e possui acesso a esta área.</span>
+        </div>
+      </div>
+
     </div>
+
   </div>
+
 </section>
 
 {% endblock %}
