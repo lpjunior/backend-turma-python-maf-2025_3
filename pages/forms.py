@@ -28,7 +28,7 @@ class ContatoForm(forms.ModelForm):
                 'class': 'form-control'
             }),
             'tipo': forms.Select(attrs={
-                'class': 'form-control'
+                'class': 'form-select'
             }),
             'telefone': forms.TelInput(attrs={
                 'placeholder': '(00) 00000-0000',

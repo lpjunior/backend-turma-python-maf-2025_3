@@ -1,111 +1,105 @@
 {% extends "pages/base.html" %}
 
-{% block title %}Contato | SolarTech{% endblock %}
+{% block title %}Solicitar Orçamento - SolarTech{% endblock %}
 
 {% block content %}
 
-<section aria-labelledby="titulo-contato" class="container my-5 d-flex justify-content-center">
+<section class="container my-4">
 
-  <div class="card border-0 shadow-sm w-100" style="max-width: 720px;">
+  <div class="card shadow-sm">
+    <div class="card-body">
 
-    <div class="card-body p-4">
+      <h1 class="h4 mb-4">
+        <i class="fa-solid fa-solar-panel me-2 text-primary"></i>
+        Solicitação de Orçamento
+      </h1>
 
-      <!-- Cabeçalho -->
-      <header class="d-flex align-items-center mb-4">
-        <i class="fa-solid fa-envelope fa-lg text-primary me-2"></i>
-        <h1 id="titulo-contato" class="h4 mb-0 fw-semibold">
-          Fale Conosco
-        </h1>
-      </header>
-
-      <p class="text-muted mb-4">
-        Preencha o formulário abaixo para enviar sua mensagem.
-        Nossa equipe retornará o mais breve possível.
-      </p>
-
-      <!-- Erros -->
-      {% if form.errors %}
-        <div class="alert alert-danger">
-          <strong>Ocorreram erros no envio:</strong>
-          <ul class="mb-0 mt-2">
-            {% for field in form %}
-              {% for error in field.errors %}
-                <li>{{ error }}</li>
-              {% endfor %}
-            {% endfor %}
-            {% for error in form.non_field_errors %}
-              <li>{{ error }}</li>
-            {% endfor %}
-          </ul>
-        </div>
-      {% endif %}
-
-      <!-- Formulário -->
       <form method="post" novalidate>
         {% csrf_token %}
 
-        <div class="mb-3">
-          <label class="form-label fw-semibold">
-            {{ form.nome.label }}
-          </label>
-          {{ form.nome }}
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <label class="form-label">Nome</label>
+            {{ form.nome }}
+
+            {% if form.nome.errors %}
+                {% for error in form.nome.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Email</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                {% for error in form.email.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Telefone</label>
+            {{ form.telefone }}
+            {% if form.telefone.errors %}
+                {% for error in form.telefone.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Tipo</label>
+            {{ form.tipo }}
+            {% if form.tipo.errors %}
+                {% for error in form.tipo.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">CEP</label>
+            {{ form.cep }}
+            {% if form.cep.errors %}
+                {% for error in form.cep.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Cidade</label>
+            {{ form.cidade }}
+            {% if form.cidade.errors %}
+                {% for error in form.cidade.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Estado</label>
+            {{ form.estado }}
+            {% if form.estado.errors %}
+                {% for error in form.estado.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Descreva sua necessidade</label>
+            {{ form.mensagem }}
+          </div>
+
         </div>
 
-        <div class="mb-3">
-          <label class="form-label fw-semibold">
-            {{ form.email.label }}
-          </label>
-          {{ form.email }}
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label fw-semibold">
-            {{ form.telefone.label }}
-          </label>
-          {{ form.telefone }}
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label fw-semibold">
-            {{ form.tipo.label }}
-          </label>
-          {{ form.tipo }}
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label fw-semibold">
-            {{ form.cep.label }}
-          </label>
-          {{ form.cep }}
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label fw-semibold">
-            {{ form.cidade.label }}
-          </label>
-          {{ form.cidade }}
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label fw-semibold">
-            {{ form.estado.label }}
-          </label>
-          {{ form.estado }}
-        </div>
-
-        <div class="mb-4">
-          <label class="form-label fw-semibold">
-            {{ form.mensagem.label }}
-          </label>
-          {{ form.mensagem }}
-        </div>
-
-        <div class="d-grid">
-          <button class="btn btn-primary btn-lg" type="submit">
-            <i class="fa-solid fa-paper-plane me-2"></i>
-            Enviar mensagem
-          </button>
-        </div>
+        <button type="submit" class="btn btn-primary mt-4">
+          Enviar Solicitação
+        </button>
 
       </form>
 
