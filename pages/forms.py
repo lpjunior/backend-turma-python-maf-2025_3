@@ -17,7 +17,7 @@ class ContatoForm(forms.ModelForm):
 
     class Meta:
         model = Pessoa
-        fields = ['nome', 'email']
+        fields = ['nome', 'email', 'tipo', 'telefone', 'cep', 'cidade', 'estado']
         widgets = {
             'nome': forms.TextInput(attrs={
                 'placeholder': 'Digite seu nome completo',
@@ -26,7 +26,26 @@ class ContatoForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={
                 'placeholder': 'Digite seu email',
                 'class': 'form-control'
-            })
+            }),
+                'tipo': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'telefone': forms.TelInput(attrs={
+                'placeholder': '(00) 00000-0000',
+                'class': 'form-control'
+            }),
+            'cep': forms.TextInput(attrs={
+                'placeholder': '00000-000',
+                'class': 'form-control'
+            }),
+            'cidade': forms.TextInput(attrs={
+                'placeholder': 'Digite sua cidade',
+                'class': 'form-control'
+            }),
+            'estado': forms.TextInput(attrs={
+                'placeholder': 'Digite seu estado (UF)',
+                'class': 'form-control'
+            }),
         }
 
     def clean_nome(self):
@@ -45,18 +64,23 @@ class ContatoForm(forms.ModelForm):
             )
         return mensagem
 
-    @transaction.atomic # decorator para garantir que as operações dentro do método sejam atômicas, ou seja, ou todas são executadas com sucesso ou nenhuma é aplicada ao banco de dados em caso de erro
+    @transaction.atomic
     def save(self, commit=True):
-        # salva ou recupera a Pessoa
         pessoa, _ = Pessoa.objects.get_or_create(
             email=self.cleaned_data['email'], # chave utilizada para buscar a Pessoa
-            defaults={'nome': self.cleaned_data['nome']} # caso a Pessoa não exista, cria uma nova com esse nome
+            defaults={
+                'nome': self.cleaned_data.get('nome'),
+                'telefone': self.cleaned_data.get('telefone'),
+                'tipo': self.cleaned_data.get('tipo'),
+                'cep': self.cleaned_data.get('cep'),
+                'cidade': self.cleaned_data.get('cidade'),
+                'estado': self.cleaned_data.get('estado'),
+            }
         )
 
-        # cria a MensagemContato vinculada
         MensagemContato.objects.create(
             pessoa=pessoa,
-            mensagem=self.cleaned_data['mensagem']
+            mensagem=self.cleaned_data.get('mensagem')
         )
 
         return pessoa
@@ -64,7 +88,15 @@ class ContatoForm(forms.ModelForm):
 class PessoaForm(forms.ModelForm):
     class Meta:
         model = Pessoa
-        fields = ['nome', 'email']
+        fields = [
+            'nome',
+            'email',
+            'telefone',
+            'tipo',
+            'cep',
+            'cidade',
+            'estado',
+        ]
         widgets = {
             'nome': forms.TextInput(attrs={
                 'placeholder': 'Digite seu nome completo',
@@ -75,6 +107,14 @@ class PessoaForm(forms.ModelForm):
                 'class': 'form-control'
             })
         }
+
+    def clean_cep(self):
+        cep = self.cleaned_data.get('cep', '').strip()
+
+        if len(cep) != 9 or not cep.replace('-', '').isdigit():
+            raise forms.ValidationError('O CEP deve estar no formato 00000-000.')
+
+        return cep
 
     def clean_nome(self):
         nome = (self.cleaned_data.get('nome', '') or '').strip()

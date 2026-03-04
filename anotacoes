@@ -305,12 +305,40 @@ CREATE TABLE produto_categoria (
     FOREIGN KEY (categoria_id) REFERENCES categoria(id)
 );
 
-
 CRUD - Create, Read/Retrieve, Update, Delete são as operações básicas para manipular dados em um banco de dados. No Django, essas operações são realizadas através dos modelos (models.py) e suas instâncias.
-
 
 permissões automaticas para Pessoa:
 - pages.add_pessoa
 - pages.change_pessoa
 - pages.delete_pessoa
 - pages.view_pessoa
+
+------
+
+Reorganização:
+
+Área publica:
+/ -> Home institucional
+/servicos/ -> Serviços oferecidos
+/projetos/ -> Portfólio de projetos
+/depoimentos/ -> Depoimentos de clientes
+/contato/ -> Formulário de contato
+
+Área administrativa:
+/gestao/ -> Dashboard de gestão
+/gestao/clientes/ -> Gerenciamento de clientes
+/gestao/solicitacoes/ -> Gerenciamento de solicitações
+/gestao/dashboard/ -> Análise de dados e relatórios
+
+----
+
+Hoje temos:
+Pessoa
+MensagemContato
+
+Vamos evoluir para:
+Cliente
+Solicitação de Orçamento
+
+- Pessoa passa a representar o cliente com campos adicionais como nome completo, telefone, endereço, etc.
+- MensagemContato passa a representar a solicitação de orçamento, com campos adicionais como status.

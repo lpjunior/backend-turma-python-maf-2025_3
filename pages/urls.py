@@ -21,4 +21,17 @@ urlpatterns = [
     path('restrita/', views.area_restrita, name='area_restrita'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
+
+
+# Area publica
+#    path('', views.home, name='home'),
+#    path('servicos/', views.servicos, name='servicos'),
+#    path('projetos/', views.projetos, name='projetos'),
+#    path('depoimentos/', views.depoimentos, name='depoimentos'),
+#    path('contato/', views.contato, name='contato'),
+
+# Area administrativa
+     path('gestao/', views.dashboard, name='dashboard'),
+#    path('gestao/clientes', views.clientes, name='clientes'),
+#    path('gestao/solicitacoes', views.solicitacoes, name='solicitacoes'),
 ]

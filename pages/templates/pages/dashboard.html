@@ -1,0 +1,56 @@
+{% extends "pages/base.html" %}
+
+{% block title %}Dashboard Administrativo{% endblock %}
+
+{% block content %}
+
+<section class="container my-4">
+
+  <h1 class="h4 mb-4">
+    <i class="fa-solid fa-chart-line me-2 text-primary"></i>
+    Dashboard Administrativo
+  </h1>
+
+  <div class="row g-3">
+
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <strong>Total de Solicitações</strong>
+          <h3>{{ total_solicitacoes|default:0 }}</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <strong>Pendentes</strong>
+          <h3 class="text-warning">{{ pendentes|default:0 }}</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <strong>Respondidas</strong>
+          <h3 class="text-success">{{ respondidos|default:0 }}</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <strong>Clientes cadastrados</strong>
+          <h3>{{ total_clientes|default:0 }}</h3>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+{% endblock %}

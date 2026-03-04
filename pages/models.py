@@ -2,22 +2,54 @@ from django.db import models
 
 
 class Pessoa(models.Model):
-    nome = models.CharField(max_length=100, blank=False, null=False)
+    TIPO_CHOICES = [
+        ('pf', 'Pessoa Física'),
+        ('pj', 'Pessoa Jurídica'),
+    ]
+
+    nome = models.CharField(max_length=150, blank=False, null=False)
     email = models.EmailField(max_length=150, blank=False, null=False)
+
+    telefone = models.CharField(max_length=20, blank=False, null=False, default='(00) 00000-0000')
+
+    tipo = models.CharField(max_length=2, choices=TIPO_CHOICES, default='pf')
+
+    cep = models.CharField(max_length=9, blank=False, null=False, default='00000-000')
+    cidade = models.CharField(max_length=100, blank=False, null=False, default='')
+    estado = models.CharField(max_length=2, blank=False, null=False, default='')
+
+    data_cadastro = models.DateTimeField(auto_now_add=True)
+
+    ativo = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'pessoas'
 
     def __str__(self):
-        return self.nome
+        return f'{self.nome} <{self.email}> - status: {self.ativo}'
 
 class MensagemContato(models.Model):
+
+    STATUS_CHOICES = [
+        ('pendente', 'Pendente'),
+        ('lido', 'Lido'),
+        ('respondido', 'Respondido')
+    ]
+
     pessoa = models.ForeignKey(
-        Pessoa,  # modelo relacionado
-        on_delete=models.CASCADE,  # se a pessoa for deletada, as mensagens relacionadas a ela também serão deletadas
-        related_name='mensagens' # nome do atributo que será criado na classe Pessoa para acessar as mensagens relacionadas a ela (ex: pessoa.mensagens.all() para obter todas as mensagens de uma pessoa)
+        Pessoa,
+        on_delete=models.CASCADE,
+        related_name='mensagens'
     )
+
     mensagem = models.TextField(blank=False, null=False)
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pendente'
+    )
+
     data_envio = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -25,4 +57,4 @@ class MensagemContato(models.Model):
         ordering = ['-data_envio']
 
     def __str__(self):
-        return f'{self.pessoa.nome} - {self.pessoa.email}'
+        return f'Solicitação de: {self.pessoa.nome} <{self.pessoa.email}>'
