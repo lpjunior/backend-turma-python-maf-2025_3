@@ -27,7 +27,7 @@ class ContatoForm(forms.ModelForm):
                 'placeholder': 'Digite seu email',
                 'class': 'form-control'
             }),
-                'tipo': forms.Select(attrs={
+            'tipo': forms.Select(attrs={
                 'class': 'form-control'
             }),
             'telefone': forms.TelInput(attrs={
@@ -49,27 +49,31 @@ class ContatoForm(forms.ModelForm):
         }
 
     def clean_nome(self):
-        nome = self.cleaned_data.get('nome', '').strip()
+        nome = (self.cleaned_data.get('nome') or '').strip()
+
         if len(nome.split()) < 2:
             raise ValidationError(
                 'Informe o nome completo, nome e sobrenome.'
             )
+
         return nome
 
     def clean_mensagem(self):
-        mensagem = self.cleaned_data.get('mensagem', '').strip()
+        mensagem = (self.cleaned_data.get('mensagem') or '').strip()
+
         if len(mensagem.split()) < 5:
             raise ValidationError(
                 'A mensagem deve conter pelo menos 5 palavras.'
             )
+
         return mensagem
 
     @transaction.atomic
     def save(self, commit=True):
         pessoa, _ = Pessoa.objects.get_or_create(
-            email=self.cleaned_data['email'], # chave utilizada para buscar a Pessoa
+            email=self.cleaned_data['email'],
             defaults={
-                'nome': self.cleaned_data.get('nome'),
+                'nome': self.cleaned_data['nome'],
                 'telefone': self.cleaned_data.get('telefone'),
                 'tipo': self.cleaned_data.get('tipo'),
                 'cep': self.cleaned_data.get('cep'),
@@ -80,10 +84,11 @@ class ContatoForm(forms.ModelForm):
 
         MensagemContato.objects.create(
             pessoa=pessoa,
-            mensagem=self.cleaned_data.get('mensagem')
+            mensagem=self.cleaned_data['mensagem']
         )
 
         return pessoa
+
 
 class PessoaForm(forms.ModelForm):
     class Meta:
@@ -105,41 +110,67 @@ class PessoaForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={
                 'placeholder': 'Digite seu email',
                 'class': 'form-control'
-            })
+            }),
+            'telefone': forms.TextInput(attrs={
+                'placeholder': '(00) 00000-0000',
+                'class': 'form-control'
+            }),
+            'tipo': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'cep': forms.TextInput(attrs={
+                'placeholder': '00000-000',
+                'class': 'form-control'
+            }),
+            'cidade': forms.TextInput(attrs={
+                'placeholder': 'Digite sua cidade',
+                'class': 'form-control'
+            }),
+            'estado': forms.TextInput(attrs={
+                'placeholder': 'UF',
+                'class': 'form-control'
+            }),
         }
 
     def clean_cep(self):
-        cep = self.cleaned_data.get('cep', '').strip()
+        cep = (self.cleaned_data.get('cep') or '').strip()
 
         if len(cep) != 9 or not cep.replace('-', '').isdigit():
-            raise forms.ValidationError('O CEP deve estar no formato 00000-000.')
+            raise forms.ValidationError(
+                'O CEP deve estar no formato 00000-000.'
+            )
 
         return cep
 
     def clean_nome(self):
-        nome = (self.cleaned_data.get('nome', '') or '').strip()
+        nome = (self.cleaned_data.get('nome') or '').strip()
 
         if len(nome) < 3:
-            raise forms.ValidationError('O nome deve conter pelo menos 3 caracteres.')
+            raise forms.ValidationError(
+                'O nome deve conter pelo menos 3 caracteres.'
+            )
 
         if len(nome.split()) < 2:
-            raise forms.ValidationError('Informe o nome completo, nome e sobrenome.')
+            raise forms.ValidationError(
+                'Informe o nome completo, nome e sobrenome.'
+            )
 
         return nome
 
     def clean_email(self):
-        email = (self.cleaned_data.get('email', '') or '').strip().lower()
+        email = (self.cleaned_data.get('email') or '').strip().lower()
 
         if not email:
             raise forms.ValidationError('O email é obrigatório.')
 
         qs = Pessoa.objects.filter(email=email)
 
-        # Se for edição, excluir o próprio registro da verificação
         if self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
 
         if qs.exists():
-            raise forms.ValidationError('Este email já está em uso.')
+            raise forms.ValidationError(
+                'Este email já está em uso.'
+            )
 
         return email
