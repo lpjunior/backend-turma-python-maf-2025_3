@@ -10,11 +10,11 @@ class Pessoa(models.Model):
     nome = models.CharField(max_length=150, blank=False, null=False)
     email = models.EmailField(max_length=150, blank=False, null=False)
 
-    telefone = models.CharField(max_length=20, blank=False, null=False, default='(00) 00000-0000')
+    telefone = models.CharField(max_length=20, blank=False, null=False)
 
     tipo = models.CharField(max_length=2, choices=TIPO_CHOICES, default='pf')
 
-    cep = models.CharField(max_length=9, blank=False, null=False, default='00000-000')
+    cep = models.CharField(max_length=9, blank=False, null=False)
     cidade = models.CharField(max_length=100, blank=False, null=False, default='')
     estado = models.CharField(max_length=2, blank=False, null=False, default='')
 
