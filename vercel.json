@@ -1,14 +1,14 @@
 {
   "builds": [
     {
-      "src": "senac_site/asgi.py",
+      "src": "api/index.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "senac_site/asgi.py"
+      "dest": "api/index.py"
     }
   ]
 }
