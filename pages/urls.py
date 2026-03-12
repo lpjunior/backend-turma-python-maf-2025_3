@@ -2,36 +2,27 @@ from . import views
 from django.urls import path
 
 urlpatterns = [
-    # As seguintes rotas são para as páginas públicas do site, acessíveis a todos os usuários.
+    # ========================
+    #      Area publica
+    # ========================
     path('', views.home, name='home'),
+    path('servicos/', views.servicos, name='servicos'),
+    path('projetos/', views.projetos, name='projetos'),
+    path('depoimentos/', views.depoimentos, name='depoimentos'),
     path('contato/', views.contato, name='contato'),
-    path('sobre/', views.sobre, name='sobre'),
-    path('ajuda/', views.ajuda, name='ajuda'),
 
-    # As seguintes rotas são para a área de mensagens, que são restritas a usuários autenticados.
-    path('mensagens/', views.mensagens, name='mensagens'),
-
-    # As seguintes rotas são para a área de pessoas, que é restrita a usuários autenticados.
-    path('pessoas/', views.pessoas, name='pessoas'),
-    path('pessoas/nova/', views.pessoa_create, name='pessoa_create'),
-    path('pessoas/<int:pessoa_id>/editar/', views.pessoa_update, name='pessoa_update'),
-    path('pessoas/<int:pessoa_id>/excluir/', views.pessoa_delete, name='pessoa_delete'),
-
-    # As seguintes rotas são para a autenticação de usuários.
-    path('restrita/', views.area_restrita, name='area_restrita'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
 
+    # ========================
+    #   Area administrativa
+    # ========================
+    path('gestao/', views.dashboard, name='dashboard'),
+    path('gestao/clientes', views.clientes, name='clientes'),
+    path('gestao/cliente/novo/', views.cliente_create, name='cliente_create'),
+    path('gestao/cliente/<int:id_cliente>', views.cliente_detalhe, name='cliente_detalhe'),
+    path('gestao/cliente/editar/', views.cliente_update, name='cliente_update'),
+    path('gestao/cliente/excluir/', views.cliente_delete, name='cliente_delete'),
 
-# Area publica
-#    path('', views.home, name='home'),
-#    path('servicos/', views.servicos, name='servicos'),
-#    path('projetos/', views.projetos, name='projetos'),
-#    path('depoimentos/', views.depoimentos, name='depoimentos'),
-#    path('contato/', views.contato, name='contato'),
-
-# Area administrativa
-     path('gestao/', views.dashboard, name='dashboard'),
-#    path('gestao/clientes', views.clientes, name='clientes'),
-#    path('gestao/solicitacoes', views.solicitacoes, name='solicitacoes'),
+    path('gestao/solicitacoes/', views.solicitacoes, name='solicitacoes'),
 ]

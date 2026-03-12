@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class Pessoa(models.Model):
+class Cliente(models.Model):
     TIPO_CHOICES = [
         ('pf', 'Pessoa Física'),
         ('pj', 'Pessoa Jurídica'),
@@ -28,7 +28,7 @@ class Pessoa(models.Model):
     def __str__(self):
         return f'{self.nome} <{self.email}> - status: {self.ativo}'
 
-class MensagemContato(models.Model):
+class Solicitacao(models.Model):
 
     STATUS_CHOICES = [
         ('pendente', 'Pendente'),
@@ -37,7 +37,7 @@ class MensagemContato(models.Model):
     ]
 
     pessoa = models.ForeignKey(
-        Pessoa,
+        Cliente,
         on_delete=models.CASCADE,
         related_name='mensagens'
     )

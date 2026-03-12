@@ -111,21 +111,21 @@
 
                     <li class="nav-item">
                         <a class="nav-link {% if request.resolver_match.url_name == 'servicos' %}active{% endif %}"
-                           href="{% url 'ajuda' %}">
+                           href="{% url 'servicos' %}">
                             <i class="fa-solid fa-screwdriver-wrench me-1"></i>Serviços
                         </a>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link {% if request.resolver_match.url_name == 'projetos' %}active{% endif %}"
-                           href="{% url 'sobre' %}">
+                           href="{% url 'projetos' %}">
                             <i class="fa-solid fa-bolt me-1"></i>Projetos
                         </a>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link {% if request.resolver_match.url_name == 'depoimentos' %}active{% endif %}"
-                           href="{% url 'mensagens' %}">
+                           href="{% url 'depoimentos' %}">
                             <i class="fa-solid fa-comments me-1"></i>Depoimentos
                         </a>
                     </li>
@@ -157,7 +157,7 @@
                         {% if perms.pages.view_mensagemcontato %}
                             <li class="nav-item">
                                 <a class="nav-link {% if request.resolver_match.url_name == 'solicitacoes' %}active{% endif %}"
-                                   href="{% url 'dashboard' %}">
+                                   href="{% url 'solicitacoes' %}">
                                     <i class="fa-solid fa-file-signature me-1"></i>Solicitações
                                 </a>
                             </li>
@@ -166,7 +166,7 @@
                         {% if perms.pages.view_pessoa %}
                             <li class="nav-item">
                                 <a class="nav-link {% if request.resolver_match.url_name == 'clientes' %}active{% endif %}"
-                                   href="{% url 'dashboard' %}">
+                                   href="{% url 'clientes' %}">
                                     <i class="fa-solid fa-users me-1"></i>Clientes
                                 </a>
                             </li>

@@ -1,5 +1,4 @@
 import logging
-from datetime import datetime
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
@@ -8,32 +7,25 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect, \
     get_object_or_404
 
-from pages.forms import ContatoForm, PessoaForm
-from pages.models import MensagemContato, Pessoa
+from pages.forms import ContatoForm, ClienteForm
+from pages.models import Solicitacao, Cliente
 
 logger = logging.getLogger(__name__)
 
+# ========================
+#    Páginas Públicas
+# ========================
 def home(request):
-    """
-    Essa função é uma 'view'.
-    Pense nela como o atendente da sua empresa.
-    alguém faz um pedido (request) e ela devolve uma resposta (response).
-    """
-    hora_atual = datetime.now().hour
+    return render(request, 'pages/home.html')
 
-    if hora_atual < 12:
-        saudacao = "Bom dia!"
-    else:
-        saudacao = "Boa tarde!"
+def servicos(request):
+    return render(request, 'pages/servicos.html')
 
-    contexto = {
-        "mensagem": f"{saudacao}! São {datetime.now().strftime("%H:%M")}. Servidor ligado e respondendo. Parabéns, você colocou um back-end no ar.",
-        "nome_aluno": "Luis",
-        "curso": "Programador Fullstack Python."
-    }
+def projetos(request):
+    return render(request, 'pages/projetos.html')
 
-    return render(request, 'pages/home.html', contexto)
-
+def depoimentos(request):
+    return render(request, 'pages/depoimentos.html')
 
 def contato(request):
     if request.method == "GET":
@@ -65,38 +57,9 @@ def contato(request):
         {'form': form}
     )
 
-def sobre(request):
-    return render(request, 'pages/sobre.html')
-
-def ajuda(request):
-    return render(request, 'pages/ajuda.html')
-
-@permission_required(
-    'pages.view_mensagemcontato',
-    raise_exception=True
-)
-def mensagens(request):
-    mensagens = MensagemContato.objects.all()
-    contexto = { 'mensagens': mensagens }
-    return render(request, 'pages/mensagens.html', contexto)
-
-@permission_required(
-    'pages.view_pessoa',
-    raise_exception=True
-)
-def pessoas(request):
-    """
-    Essa view é para exibir a lista de pessoas cadastradas no banco de dados.
-    """
-    lista = (
-        Pessoa.objects
-        .annotate(total_mensagens=Count('mensagens'))
-        .order_by("nome") # ordena por nome
-    )
-
-    contexto = { 'pessoas': lista }
-    return render(request, 'pages/pessoas.html', contexto)
-
+# ========================
+#    Autenticação
+# ========================
 def login_view(request):
     if request.method == "POST":
         username = (request.POST.get('username') or '').strip()
@@ -116,10 +79,9 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
-@login_required
-def area_restrita(request):
-    return render(request, 'pages/restrita.html')
-
+# ========================
+#    Tratamento de Erros
+# ========================
 def erro_403(request, exception=None):
     try:
         if exception:
@@ -141,62 +103,18 @@ def erro_403(request, exception=None):
 
         return HttpResponseForbidden("Acesso negado. Você não tem permissão para acessar esta página.")
 
-@permission_required(
-    'pages.add_pessoa',
-    raise_exception=True
-)
-def pessoa_create(request):
-    if request.method == "POST":
-        form = PessoaForm(request.POST)
-
-        if form.is_valid():
-            form.save()
-            return redirect('pessoas')
-    else:
-        form = PessoaForm()
-
-    return render(request, 'pages/pessoa_form.html', {'form': form, "acao": "Criar"})
-
-@permission_required(
-    'pages.change_pessoa',
-    raise_exception=True
-)
-def pessoa_update(request, pessoa_id):
-    pessoa = get_object_or_404(Pessoa, id=pessoa_id)
-
-    if request.method == "POST":
-        form = PessoaForm(request.POST, instance=pessoa)
-
-        if form.is_valid():
-            form.save()
-            return redirect('pessoas')
-    else:
-        form = PessoaForm(instance=pessoa)
-
-    return render(request, 'pages/pessoa_form.html', {'form': form, "acao": "Editar"})
-
-@permission_required(
-    'pages.delete_pessoa',
-    raise_exception=True
-)
-def pessoa_delete(request, pessoa_id):
-    pessoa = get_object_or_404(Pessoa, id=pessoa_id)
-
-    if request.method == "POST":
-        pessoa.delete()
-        return redirect('pessoas')
-
-    return render(request, 'pages/pessoa_confirm_delete.html', {'pessoa': pessoa})
-
+# ========================
+#    Gestão, Dashboard
+# ========================
 @login_required
 def dashboard(request):
-    total_solicitacoes = MensagemContato.objects.count()
+    total_solicitacoes = Solicitacao.objects.count()
 
-    pendentes = MensagemContato.objects.filter(status='pendente').count()
-    lidas = MensagemContato.objects.filter(status='lido').count()
-    respondidas = MensagemContato.objects.filter(status='respondido').count()
+    pendentes = Solicitacao.objects.filter(status='pendente').count()
+    lidas = Solicitacao.objects.filter(status='lido').count()
+    respondidas = Solicitacao.objects.filter(status='respondido').count()
 
-    total_clientes = Pessoa.objects.count()
+    total_clientes = Cliente.objects.count()
 
     contexto = {
         'total_solicitacoes': total_solicitacoes,
@@ -207,3 +125,101 @@ def dashboard(request):
     }
 
     return render(request, 'pages/dashboard.html', contexto)
+
+# ========================
+#    Gestão, Clientes
+# ========================
+@permission_required(
+    'pages.view_cliente',
+    raise_exception=True
+)
+def clientes(request):
+    clientes_qs = (
+        Cliente.objects
+        .annotate(total_solicitacoes=Count('mensagens'))
+        .order_by('nome')
+    )
+
+    return render(request, 'pages/clientes.html', { 'clientes': clientes_qs })
+
+@permission_required(
+    'pages.view_cliente',
+    raise_exception=True
+)
+
+def cliente_detalhe(request, id_cliente):
+    cliente = get_object_or_404(Cliente, id=id_cliente)
+
+    solicitacoes = cliente.mensagens.all().order_by('-data_envio')
+
+    return render(
+        request,
+        'pages/cliente_detalhe.html',
+        {
+            'cliente': cliente,
+            'solicitacoes': solicitacoes
+        }
+    )
+
+@permission_required(
+    'pages.add_cliente',
+    raise_exception=True
+)
+def cliente_create(request):
+    if request.method == "POST":
+        form = ClienteForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('clientes')
+    else:
+        form = ClienteForm()
+
+    return render(request, 'pages/cliente_form.html', {'form': form, "acao": "Criar"})
+
+@permission_required(
+    'pages.change_cliente',
+    raise_exception=True
+)
+def cliente_update(request, cliente_id):
+    cliente = get_object_or_404(Cliente, id=cliente_id)
+
+    if request.method == "POST":
+        form = ClienteForm(request.POST, instance=cliente)
+
+        if form.is_valid():
+            form.save()
+            return redirect('clientes')
+    else:
+        form = ClienteForm(instance=cliente)
+
+    return render(request, 'pages/cliente_form.html', {'form': form, "acao": "Editar"})
+
+@permission_required(
+    'pages.delete_cliente',
+    raise_exception=True
+)
+def cliente_delete(request, cliente_id):
+    cliente = get_object_or_404(Cliente, id=cliente_id)
+
+    if request.method == "POST":
+        cliente.delete()
+        return redirect('clientes')
+
+    return render(request, 'pages/cliente_confirm_delete.html', {'cliente': cliente})
+
+
+# ========================
+#    Gestão, Solicitações
+# ========================
+@permission_required(
+    'pages.view_solicitacao',
+    raise_exception=True
+)
+def solicitacoes(request):
+    solicitacoes_qs = (
+        Solicitacao.objects
+        .select_related('pessoa')
+        .all()
+    )
+    return render(request, 'pages/solicitacoes.html', { 'solicitacoes': solicitacoes_qs })

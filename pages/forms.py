@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from pages.models import Pessoa, MensagemContato
+from pages.models import Cliente, Solicitacao
 
 
 class ContatoForm(forms.ModelForm):
@@ -16,7 +16,7 @@ class ContatoForm(forms.ModelForm):
     )
 
     class Meta:
-        model = Pessoa
+        model = Cliente
         fields = ['nome', 'email', 'tipo', 'telefone', 'cep', 'cidade', 'estado']
         widgets = {
             'nome': forms.TextInput(attrs={
@@ -70,7 +70,7 @@ class ContatoForm(forms.ModelForm):
 
     @transaction.atomic
     def save(self, commit=True):
-        pessoa, _ = Pessoa.objects.get_or_create(
+        cliente, _ = Cliente.objects.get_or_create(
             email=self.cleaned_data['email'],
             defaults={
                 'nome': self.cleaned_data['nome'],
@@ -82,17 +82,17 @@ class ContatoForm(forms.ModelForm):
             }
         )
 
-        MensagemContato.objects.create(
-            pessoa=pessoa,
-            mensagem=self.cleaned_data['mensagem']
+        Solicitacao.objects.create(
+            cliente=cliente,
+            solicitacao=self.cleaned_data['mensagem']
         )
 
-        return pessoa
+        return cliente
 
 
-class PessoaForm(forms.ModelForm):
+class ClienteForm(forms.ModelForm):
     class Meta:
-        model = Pessoa
+        model = Cliente
         fields = [
             'nome',
             'email',
@@ -116,7 +116,7 @@ class PessoaForm(forms.ModelForm):
                 'class': 'form-control'
             }),
             'tipo': forms.Select(attrs={
-                'class': 'form-control'
+                'class': 'form-select'
             }),
             'cep': forms.TextInput(attrs={
                 'placeholder': '00000-000',
@@ -142,6 +142,16 @@ class PessoaForm(forms.ModelForm):
 
         return cep
 
+    def clean_telefone(self):
+        telefone = (self.cleaned_data.get('telefone') or '').strip()
+
+        if len(telefone) < 10 or not telefone.replace('(', '').replace(')', '').replace('-', '').replace(' ', '').isdigit():
+            raise forms.ValidationError(
+                'O telefone deve conter pelo menos 10 dígitos e estar no formato (00) 00000-0000.'
+            )
+
+        return telefone
+
     def clean_nome(self):
         nome = (self.cleaned_data.get('nome') or '').strip()
 
@@ -163,7 +173,7 @@ class PessoaForm(forms.ModelForm):
         if not email:
             raise forms.ValidationError('O email é obrigatório.')
 
-        qs = Pessoa.objects.filter(email=email)
+        qs = Cliente.objects.filter(email=email)
 
         if self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)

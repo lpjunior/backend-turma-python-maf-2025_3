@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import Pessoa, MensagemContato
+from .models import Cliente, Solicitacao
 
 
-@admin.register(Pessoa) # Registrar o modelo Pessoa no admin. É equivalente a admin.site.register(Pessoa)
+@admin.register(Cliente) # Registrar o modelo Pessoa no admin. É equivalente a admin.site.register(Pessoa)
 class PessoaAdmin(admin.ModelAdmin):
     list_display = ('nome', 'email', 'total_mensagens')
     search_fields = ('nome', 'email')
@@ -15,34 +15,34 @@ class PessoaAdmin(admin.ModelAdmin):
     total_mensagens.short_description = 'Total de Mensagens'
 
 
-@admin.register(MensagemContato)
+@admin.register(Solicitacao)
 class MensagemContatoAdmin(admin.ModelAdmin):
     list_display = (
-        'pessoa',
+        'cliente',
         'email',
         'data_envio',
         'mensagem_resumida',
     )
 
     search_fields = (
-        'pessoa__nome',
-        'pessoa__email',
+        'cliente__nome',
+        'cliente__email',
         'mensagem',
     )
 
     list_filter = (
         'data_envio',
-        'pessoa',
+        'cliente',
     )
 
     ordering = ('-data_envio',)
     date_hierarchy = 'data_envio'
-    list_select_related = ('pessoa',)
+    list_select_related = ('cliente',)
     list_per_page = 20
     readonly_fields = ('data_envio',)
 
     def email(self, obj):
-        return obj.pessoa.email
+        return obj.cliente.email
 
     email.short_description = 'Email'
 
