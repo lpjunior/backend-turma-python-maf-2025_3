@@ -69,7 +69,7 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
-            return redirect('area_restrita')
+            return redirect('dashboard')
         else:
             return render(request, 'pages/login.html', {'error': 'Credenciais inválidas'})
 
@@ -219,7 +219,7 @@ def cliente_delete(request, cliente_id):
 def solicitacoes(request):
     solicitacoes_qs = (
         Solicitacao.objects
-        .select_related('pessoa')
+        .select_related('cliente')
         .all()
     )
     return render(request, 'pages/solicitacoes.html', { 'solicitacoes': solicitacoes_qs })

@@ -16,7 +16,7 @@ class PessoaAdmin(admin.ModelAdmin):
 
 
 @admin.register(Solicitacao)
-class MensagemContatoAdmin(admin.ModelAdmin):
+class SolicitacaoAdmin(admin.ModelAdmin):
     list_display = (
         'cliente',
         'email',

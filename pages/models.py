@@ -36,7 +36,7 @@ class Solicitacao(models.Model):
         ('respondido', 'Respondido')
     ]
 
-    pessoa = models.ForeignKey(
+    cliente = models.ForeignKey(
         Cliente,
         on_delete=models.CASCADE,
         related_name='mensagens'
@@ -57,4 +57,4 @@ class Solicitacao(models.Model):
         ordering = ['-data_envio']
 
     def __str__(self):
-        return f'Solicitação de: {self.pessoa.nome} <{self.pessoa.email}>'
+        return f'Solicitação de: {self.cliente.nome} <{self.cliente.email}>'

@@ -154,7 +154,7 @@
                             </a>
                         </li>
 
-                        {% if perms.pages.view_mensagemcontato %}
+                        {% if perms.pages.view_solicitacao %}
                             <li class="nav-item">
                                 <a class="nav-link {% if request.resolver_match.url_name == 'solicitacoes' %}active{% endif %}"
                                    href="{% url 'solicitacoes' %}">
