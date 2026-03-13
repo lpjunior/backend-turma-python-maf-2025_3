@@ -1,75 +1,339 @@
 {% extends "pages/base.html" %}
 
-{% block title %}Home | SolarTech{% endblock %}
+{% block title %}SolarTech, Energia Solar com Eficiência e Confiança{% endblock %}
 
 {% block content %}
 
-<div class="container my-5">
+<!-- HERO -->
+<section class="py-5 bg-light border-bottom">
+  <div class="container">
+    <div class="row align-items-center g-4">
 
-  <!-- Mensagem do servidor -->
-  <section class="mb-5" aria-labelledby="titulo-mensagem">
-    <div class="card border-0 shadow-sm">
-      <div class="card-body p-4">
+      <div class="col-lg-6">
+        <span class="badge bg-warning text-dark mb-3">
+          Energia limpa para residências e empresas
+        </span>
 
-        <header class="d-flex align-items-center mb-3">
-          <i class="fa-solid fa-server fa-lg text-primary me-2"></i>
-          <h2 id="titulo-mensagem" class="h5 mb-0 fw-semibold">
-            Mensagem do servidor
-          </h2>
-        </header>
+        <h1 class="display-5 fw-bold mb-3">
+          Soluções completas em energia solar para reduzir custos e aumentar eficiência
+        </h1>
 
-        <div class="bg-light rounded p-4 text-center">
-          <p class="fs-4 fw-bold text-primary mb-0">
-            {{ mensagem }}
-          </p>
+        <p class="lead text-muted mb-4">
+          A SolarTech é especializada em instalação e manutenção de sistemas fotovoltaicos,
+          ajudando clientes a economizar na conta de energia com tecnologia, segurança e atendimento profissional.
+        </p>
+
+        <div class="d-flex flex-wrap gap-2">
+          <a href="{% url 'contato' %}" class="btn btn-primary btn-lg">
+            <i class="fa-solid fa-file-signature me-2"></i>
+            Solicitar orçamento
+          </a>
+
+          <a href="{% url 'servicos' %}" class="btn btn-outline-secondary btn-lg">
+            <i class="fa-solid fa-screwdriver-wrench me-2"></i>
+            Conhecer serviços
+          </a>
         </div>
-
       </div>
+
+      <div class="col-lg-6">
+        <div class="card shadow-sm border-0">
+          <img
+            src="https://images.unsplash.com/photo-1509395176047-4a66953fd231?auto=format&fit=crop&w=1200&q=80"
+            class="card-img-top rounded"
+            alt="Painéis solares instalados em telhado residencial"
+          >
+        </div>
+      </div>
+
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Informações do aluno -->
-  <section aria-labelledby="titulo-contato">
-    <div class="card border-0 shadow-sm">
-      <div class="card-body p-4">
+<!-- SOBRE A EMPRESA -->
+<section class="py-5">
+  <div class="container">
+    <div class="row g-4 align-items-center">
 
-        <header class="d-flex align-items-center mb-4">
-          <i class="fa-solid fa-address-card fa-lg text-success me-2"></i>
-          <h2 id="titulo-contato" class="h5 mb-0 fw-semibold">
-            Informações do aluno
-          </h2>
-        </header>
+      <div class="col-lg-6">
+        <h2 class="fw-bold mb-3">
+          Quem somos
+        </h2>
 
-        <div class="row g-4">
+        <p class="text-muted">
+          A SolarTech nasceu com o propósito de tornar a energia solar mais acessível,
+          segura e eficiente para clientes residenciais, comerciais e rurais.
+        </p>
+
+        <p class="text-muted mb-0">
+          Atuamos desde a análise inicial de consumo até a instalação e manutenção do sistema,
+          sempre com foco em economia, sustentabilidade e qualidade no atendimento.
+        </p>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="row g-3">
 
           <div class="col-md-6">
-            <div class="border rounded p-3 bg-light h-100">
-              <small class="text-muted d-block mb-1">
-                Nome do aluno
-              </small>
-              <span class="fw-semibold">
-                {{ nome_aluno }}
-              </span>
+            <div class="card shadow-sm h-100">
+              <div class="card-body">
+                <i class="fa-solid fa-bolt text-warning fs-3 mb-3"></i>
+                <h3 class="h5">Economia real</h3>
+                <p class="text-muted mb-0">
+                  Redução significativa na conta de energia com soluções bem dimensionadas.
+                </p>
+              </div>
             </div>
           </div>
 
           <div class="col-md-6">
-            <div class="border rounded p-3 bg-light h-100">
-              <small class="text-muted d-block mb-1">
-                Curso
-              </small>
-              <span class="fw-semibold">
-                {{ curso }}
-              </span>
+            <div class="card shadow-sm h-100">
+              <div class="card-body">
+                <i class="fa-solid fa-leaf text-success fs-3 mb-3"></i>
+                <h3 class="h5">Sustentabilidade</h3>
+                <p class="text-muted mb-0">
+                  Energia limpa, renovável e alinhada às práticas modernas de responsabilidade ambiental.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+              <div class="card-body">
+                <i class="fa-solid fa-shield-halved text-primary fs-3 mb-3"></i>
+                <h3 class="h5">Segurança técnica</h3>
+                <p class="text-muted mb-0">
+                  Projetos executados com critérios técnicos e foco em desempenho confiável.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+              <div class="card-body">
+                <i class="fa-solid fa-headset text-info fs-3 mb-3"></i>
+                <h3 class="h5">Suporte contínuo</h3>
+                <p class="text-muted mb-0">
+                  Acompanhamento após a instalação, com manutenção e apoio ao cliente.
+                </p>
+              </div>
             </div>
           </div>
 
         </div>
-
       </div>
-    </div>
-  </section>
 
-</div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVIÇOS -->
+<section class="py-5 bg-light">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <h2 class="fw-bold">Nossos serviços</h2>
+      <p class="text-muted mb-0">
+        Soluções completas para quem busca geração de energia com qualidade e eficiência.
+      </p>
+    </div>
+
+    <div class="row g-4">
+
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100 border-0">
+          <div class="card-body">
+            <i class="fa-solid fa-solar-panel text-warning fs-2 mb-3"></i>
+            <h3 class="h5">Instalação de sistemas solares</h3>
+            <p class="text-muted">
+              Projeto e instalação de sistemas fotovoltaicos para residências, comércios e propriedades rurais.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100 border-0">
+          <div class="card-body">
+            <i class="fa-solid fa-screwdriver-wrench text-primary fs-2 mb-3"></i>
+            <h3 class="h5">Manutenção preventiva e corretiva</h3>
+            <p class="text-muted">
+              Avaliação técnica, limpeza, inspeção e correção de falhas para manter o sistema em alta performance.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100 border-0">
+          <div class="card-body">
+            <i class="fa-solid fa-chart-line text-success fs-2 mb-3"></i>
+            <h3 class="h5">Consultoria energética</h3>
+            <p class="text-muted">
+              Estudo de viabilidade e análise de consumo para recomendar a solução ideal para cada cliente.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="{% url 'servicos' %}" class="btn btn-outline-primary">
+        Ver todos os serviços
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROJETOS -->
+<section class="py-5">
+  <div class="container">
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+      <div>
+        <h2 class="fw-bold mb-1">Projetos em destaque</h2>
+        <p class="text-muted mb-0">
+          Conheça alguns exemplos de soluções aplicadas em diferentes cenários.
+        </p>
+      </div>
+
+      <a href="{% url 'projetos' %}" class="btn btn-outline-secondary">
+        Ver portfólio completo
+      </a>
+    </div>
+
+    <div class="row g-4">
+
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+          <img
+            src="https://images.unsplash.com/photo-1497440001374-f26997328c1b?auto=format&fit=crop&w=1200&q=80"
+            class="card-img-top"
+            alt="Projeto solar residencial"
+          >
+          <div class="card-body">
+            <h3 class="h5">Projeto residencial</h3>
+            <p class="text-muted mb-0">
+              Sistema instalado para reduzir o consumo mensal e aumentar a autonomia energética da residência.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+          <img
+            src="https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&w=1200&q=80"
+            class="card-img-top"
+            alt="Projeto solar comercial"
+          >
+          <div class="card-body">
+            <h3 class="h5">Projeto comercial</h3>
+            <p class="text-muted mb-0">
+              Solução aplicada em empresa para redução de custos operacionais e melhor previsibilidade energética.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+          <img
+            src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=1200&q=80"
+            class="card-img-top"
+            alt="Projeto solar rural"
+          >
+          <div class="card-body">
+            <h3 class="h5">Projeto rural</h3>
+            <p class="text-muted mb-0">
+              Sistema voltado à otimização energética de operação rural, com foco em estabilidade e economia.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<section class="py-5 bg-light">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <h2 class="fw-bold">O que dizem nossos clientes</h2>
+      <p class="text-muted mb-0">
+        Resultados reais e confiança construída com cada projeto entregue.
+      </p>
+    </div>
+
+    <div class="row g-4">
+
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100 border-0">
+          <div class="card-body">
+            <i class="fa-solid fa-quote-left text-warning fs-3 mb-3"></i>
+            <p class="text-muted">
+              “Desde a instalação já percebemos diferença nos custos. O atendimento foi excelente do início ao fim.”
+            </p>
+            <strong class="d-block">Marcos Silva</strong>
+            <small class="text-muted">Cliente residencial</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100 border-0">
+          <div class="card-body">
+            <i class="fa-solid fa-quote-left text-warning fs-3 mb-3"></i>
+            <p class="text-muted">
+              “Equipe organizada, explicação clara e execução muito profissional. Recomendo sem dúvidas.”
+            </p>
+            <strong class="d-block">Juliana Oliveira</strong>
+            <small class="text-muted">Cliente comercial</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100 border-0">
+          <div class="card-body">
+            <i class="fa-solid fa-quote-left text-warning fs-3 mb-3"></i>
+            <p class="text-muted">
+              “A manutenção feita melhorou bastante o desempenho do sistema. Atendimento técnico muito bom.”
+            </p>
+            <strong class="d-block">Carlos Mendes</strong>
+            <small class="text-muted">Cliente de manutenção</small>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="py-5 text-white" style="background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);">
+  <div class="container text-center">
+    <h2 class="fw-bold mb-3">
+      Solicite agora seu orçamento personalizado
+    </h2>
+
+    <p class="mb-4">
+      Nossa equipe está pronta para entender sua necessidade e propor a melhor solução em energia solar.
+    </p>
+
+    <a href="{% url 'contato' %}" class="btn btn-light btn-lg text-primary fw-semibold">
+      <i class="fa-solid fa-paper-plane me-2"></i>
+      Entrar em contato
+    </a>
+  </div>
+</section>
 
 {% endblock %}
