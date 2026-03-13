@@ -1,63 +1,74 @@
 {% extends "pages/base.html" %}
 
-{% block title %}Sobre | SolarTech{% endblock %}
+{% block title %}Projetos | SolarTech{% endblock %}
 
 {% block content %}
 
-<section aria-labelledby="titulo-sobre" class="container my-5 d-flex justify-content-center">
+<section class="py-5 bg-light border-bottom">
+  <div class="container">
+    <h1 class="fw-bold mb-3">Projetos Realizados</h1>
+    <p class="text-muted">
+      Conheça alguns exemplos de instalações realizadas pela SolarTech.
+    </p>
+  </div>
+</section>
 
-  <div class="card border-0 shadow-sm w-100" style="max-width: 800px;">
+<section class="py-5">
+  <div class="container">
 
-    <div class="card-body p-4">
+    <div class="row g-4">
 
-      <!-- Cabeçalho -->
-      <header class="d-flex align-items-center mb-4">
-        <i class="fa-solid fa-circle-info fa-lg text-info me-2"></i>
-        <h1 id="titulo-sobre" class="h4 mb-0 fw-semibold">
-          Sobre o projeto
-        </h1>
-      </header>
-
-      <!-- Descrição principal -->
-      <p class="text-muted mb-4">
-        Este site foi desenvolvido como parte das atividades da UC3,
-        utilizando Python, Django e boas práticas de desenvolvimento web.
-      </p>
-
-      <!-- Objetivos -->
-      <div class="row g-4">
-
-        <div class="col-md-6">
-          <div class="border rounded p-3 h-100 bg-light">
-            <div class="d-flex align-items-center mb-2">
-              <i class="fa-solid fa-code text-primary me-2"></i>
-              <h2 class="h6 mb-0 fw-semibold">Tecnologias utilizadas</h2>
-            </div>
-            <p class="mb-0 text-muted">
-              Python, Django, Bootstrap 5 e integração com templates dinâmicos.
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <img
+            src="https://images.unsplash.com/photo-1497440001374-f26997328c1b"
+            class="card-img-top"
+            alt="Projeto residencial"
+          >
+          <div class="card-body">
+            <h3 class="h5">Sistema Residencial</h3>
+            <p class="text-muted">
+              Instalação em residência com foco na redução da conta de energia.
             </p>
           </div>
         </div>
+      </div>
 
-        <div class="col-md-6">
-          <div class="border rounded p-3 h-100 bg-light">
-            <div class="d-flex align-items-center mb-2">
-              <i class="fa-solid fa-lightbulb text-warning me-2"></i>
-              <h2 class="h6 mb-0 fw-semibold">Objetivo do projeto</h2>
-            </div>
-            <p class="mb-0 text-muted">
-              Aplicar conceitos de back-end, organização de código,
-              autenticação, permissões e integração entre views e templates.
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <img
+            src="https://images.unsplash.com/photo-1466611653911-95081537e5b7"
+            class="card-img-top"
+            alt="Projeto comercial"
+          >
+          <div class="card-body">
+            <h3 class="h5">Sistema Comercial</h3>
+            <p class="text-muted">
+              Instalação realizada em empresa para redução de custos operacionais.
             </p>
           </div>
         </div>
+      </div>
 
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <img
+            src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d"
+            class="card-img-top"
+            alt="Projeto rural"
+          >
+          <div class="card-body">
+            <h3 class="h5">Sistema Rural</h3>
+            <p class="text-muted">
+              Solução de geração de energia aplicada em propriedade rural.
+            </p>
+          </div>
+        </div>
       </div>
 
     </div>
 
   </div>
-
 </section>
 
 {% endblock %}

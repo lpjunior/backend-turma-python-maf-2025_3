@@ -1,61 +1,65 @@
 {% extends "pages/base.html" %}
 
-{% block title %}Ajuda | SolarTech{% endblock %}
+{% block title %}Serviços | SolarTech{% endblock %}
 
 {% block content %}
 
-<section aria-labelledby="titulo-ajuda" class="container my-5 d-flex justify-content-center">
+<section class="py-5 bg-light border-bottom">
+  <div class="container">
+    <h1 class="fw-bold mb-3">Nossos Serviços</h1>
+    <p class="text-muted">
+      Oferecemos soluções completas em energia solar, desde o planejamento até a manutenção do sistema.
+    </p>
+  </div>
+</section>
 
-  <div class="card border-0 shadow-sm w-100" style="max-width: 720px;">
+<section class="py-5">
+  <div class="container">
 
-    <div class="card-body p-4">
+    <div class="row g-4">
 
-      <!-- Cabeçalho -->
-      <header class="d-flex align-items-center mb-3">
-        <i class="fa-solid fa-life-ring fa-lg text-warning me-2"></i>
-        <h1 id="titulo-ajuda" class="h4 mb-0 fw-semibold">
-          Central de Ajuda
-        </h1>
-      </header>
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <i class="fa-solid fa-solar-panel text-warning fs-2 mb-3"></i>
+            <h3 class="h5">Instalação de Sistemas Fotovoltaicos</h3>
+            <p class="text-muted">
+              Projeto e instalação de sistemas de geração de energia solar para residências,
+              empresas e propriedades rurais.
+            </p>
+          </div>
+        </div>
+      </div>
 
-      <!-- Descrição -->
-      <p class="text-muted mb-4">
-        Caso tenha dúvidas sobre o funcionamento do sistema,
-        consulte as orientações abaixo antes de entrar em contato com o suporte.
-      </p>
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <i class="fa-solid fa-wrench text-primary fs-2 mb-3"></i>
+            <h3 class="h5">Manutenção de Sistemas</h3>
+            <p class="text-muted">
+              Serviços de manutenção preventiva e corretiva para garantir o desempenho ideal
+              do sistema de energia solar.
+            </p>
+          </div>
+        </div>
+      </div>
 
-      <!-- Lista de orientações -->
-      <ul class="list-group list-group-flush">
-
-        <li class="list-group-item d-flex align-items-start gap-2 py-3">
-          <i class="fa-solid fa-server text-primary mt-1"></i>
-          <span>Verifique se o servidor está em execução.</span>
-        </li>
-
-        <li class="list-group-item d-flex align-items-start gap-2 py-3">
-          <i class="fa-solid fa-link text-primary mt-1"></i>
-          <span>Confirme se as URLs estão corretamente configuradas.</span>
-        </li>
-
-        <li class="list-group-item d-flex align-items-start gap-2 py-3">
-          <i class="fa-solid fa-terminal text-primary mt-1"></i>
-          <span>Em caso de erro, consulte o console do Django para identificar possíveis mensagens de exceção.</span>
-        </li>
-
-      </ul>
-
-      <!-- Rodapé opcional -->
-      <div class="mt-4 text-center">
-        <a href="{% url 'contato' %}" class="btn btn-outline-primary px-4">
-          <i class="fa-solid fa-envelope me-1"></i>
-          Falar com o suporte
-        </a>
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <i class="fa-solid fa-chart-line text-success fs-2 mb-3"></i>
+            <h3 class="h5">Consultoria Energética</h3>
+            <p class="text-muted">
+              Análise de consumo e estudo de viabilidade para implantação de energia solar
+              com foco em economia e eficiência.
+            </p>
+          </div>
+        </div>
       </div>
 
     </div>
 
   </div>
-
 </section>
 
 {% endblock %}
