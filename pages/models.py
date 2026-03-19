@@ -68,7 +68,7 @@ class Orcamento(models.Model):
         ('rejeitado', 'Rejeitado')
     ]
 
-    solicitacao = models.ForeignKey(
+    solicitacao = models.OneToOneField(
         Solicitacao,
         on_delete=models.CASCADE,
         related_name='orcamento'
@@ -86,11 +86,11 @@ class Orcamento(models.Model):
     )
 
     criado_em = models.DateTimeField(auto_now_add=True)
-    atualizado_em = models.DateTimeField(auto_now_add=True)
+    modificado_em = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'orcamentos'
-        ordering = ['-atualizado_em']
+        ordering = ['-modificado_em']
 
     def __str__(self):
         return f'Orçamento de: {self.id}, {self.solicitacao.cliente.nome} <{self.solicitacao.cliente.email}>'
