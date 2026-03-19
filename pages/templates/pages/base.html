@@ -156,8 +156,8 @@
 
                         {% if perms.pages.view_solicitacao %}
                             <li class="nav-item">
-                                <a class="nav-link {% if request.resolver_match.url_name == 'solicitacoes' %}active{% endif %}"
-                                   href="{% url 'solicitacoes' %}">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'solicitacoes_lista' %}active{% endif %}"
+                                   href="{% url 'solicitacoes_lista' %}">
                                     <i class="fa-solid fa-file-signature me-1"></i>Solicitações
                                 </a>
                             </li>

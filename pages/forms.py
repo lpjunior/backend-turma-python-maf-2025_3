@@ -1,17 +1,17 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from pages.models import Cliente, Solicitacao
+from pages.models import Cliente, Solicitacao, Orcamento
 
 
-class ContatoForm(forms.ModelForm):
+class SolicitacaoForm(forms.ModelForm):
     mensagem = forms.CharField(
         widget=forms.Textarea(attrs={
-            'placeholder': 'Digite sua mensagem',
+            'placeholder': 'Descreva sua necessidade',
             'class': 'form-control',
             'rows': 4
         }),
-        label='Mensagem',
+        label='Descrição',
         required=True
     )
 
@@ -63,7 +63,7 @@ class ContatoForm(forms.ModelForm):
 
         if len(mensagem.split()) < 5:
             raise ValidationError(
-                'A mensagem deve conter pelo menos 5 palavras.'
+                'A descrição deve conter pelo menos 5 palavras.'
             )
 
         return mensagem
@@ -84,7 +84,7 @@ class ContatoForm(forms.ModelForm):
 
         Solicitacao.objects.create(
             cliente=cliente,
-            solicitacao=self.cleaned_data['mensagem']
+            solicitacao=self.cleaned_data['descricao']
         )
 
         return cliente
@@ -184,3 +184,22 @@ class ClienteForm(forms.ModelForm):
             )
 
         return email
+
+class OrcamentoForm(forms.ModelForm):
+    class Meta:
+        model = Orcamento
+        fields = ['titulo', 'descricao', 'valor', 'status']
+        widgets = {
+            'titulo': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'descricao': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'valor': forms.NumberInput(attrs={
+                'class': 'form-control'
+            }),
+            'status': forms.Select(attrs={
+                'class': 'form-select'
+            })
+        }

@@ -9,8 +9,6 @@ urlpatterns = [
     path('servicos/', views.servicos, name='servicos'),
     path('projetos/', views.projetos, name='projetos'),
     path('depoimentos/', views.depoimentos, name='depoimentos'),
-    path('contato/', views.contato, name='contato'),
-
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
 
@@ -24,5 +22,11 @@ urlpatterns = [
     path('gestao/cliente/editar/', views.cliente_update, name='cliente_update'),
     path('gestao/cliente/excluir/', views.cliente_delete, name='cliente_delete'),
 
-    path('gestao/solicitacoes/', views.solicitacoes, name='solicitacoes'),
+
+    path('contato/', views.contato, name='contato'),
+
+    path('solicitacoes/', views.lista_solicitacoes, name='solicitacoes_lista'),
+    path('solicitacoes/<int:id>/', views.detalhe_solicitacao, name='detalhe_solicitacao'),
+
+    path('orcamento/criar/<int:solicitacao_id>/', views.criar_orcamento, name='criar_orcamento'),
 ]

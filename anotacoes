@@ -342,3 +342,7 @@ Solicitação de Orçamento
 
 - Pessoa passa a representar o cliente com campos adicionais como nome completo, telefone, endereço, etc.
 - MensagemContato passa a representar a solicitação de orçamento, com campos adicionais como status.
+
+------------------------------------------------
+
+solicitação (págian de contato) -> cadastra a msg e o cliente -> usuário vincula um orçamento a msg de contato

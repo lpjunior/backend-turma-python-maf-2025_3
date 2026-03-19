@@ -1,0 +1,25 @@
+{% extends "pages/base.html" %}
+
+{% block content %}
+<h2>Solicitação</h2>
+
+<p><strong>Cliente:</strong> {{ solicitacao.cliente.nome }}</p>
+<p><strong>Email:</strong> {{ solicitacao.cliente.email }}</p>
+<p><strong>Mensagem:</strong> {{ solicitacao.mensagem }}</p>
+<p><strong>Status:</strong> {{ solicitacao.get_status_display }}</p>
+
+<hr>
+
+{% if orcamento %}
+<h3>Orçamento</h3>
+<p><strong>Título:</strong> {{ orcamento.titulo }}</p>
+<p><strong>Descrição:</strong> {{ orcamento.descricao }}</p>
+<p><strong>Valor:</strong> R$ {{ orcamento.valor_estimado }}</p>
+<p><strong>Status:</strong> {{ orcamento.get_status_display }}</p>
+{% else %}
+<a href="{% url 'criar_orcamento' solicitacao.id %}" class="btn btn-primary">
+    Criar Orçamento
+</a>
+{% endif %}
+
+{% endblock %}

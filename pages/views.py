@@ -7,7 +7,7 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect, \
     get_object_or_404
 
-from pages.forms import ContatoForm, ClienteForm
+from pages.forms import SolicitacaoForm, ClienteForm, OrcamentoForm
 from pages.models import Solicitacao, Cliente
 
 logger = logging.getLogger(__name__)
@@ -29,10 +29,10 @@ def depoimentos(request):
 
 def contato(request):
     if request.method == "GET":
-        form = ContatoForm()
+        form = SolicitacaoForm()
 
     else:
-        form = ContatoForm(request.POST)
+        form = SolicitacaoForm(request.POST)
 
         if form.is_valid():
             nome = form.cleaned_data['nome']
@@ -44,7 +44,7 @@ def contato(request):
             # Exibe uma mensagem de sucesso
             return render(
                 request,
-                'pages/contato_resultado.html',
+                'pages/contato_sucesso.html',
                 {
                     'nome': nome,
                     'email': email
@@ -56,6 +56,7 @@ def contato(request):
         'pages/contato.html',
         {'form': form}
     )
+
 
 # ========================
 #    Autenticação
@@ -216,10 +217,49 @@ def cliente_delete(request, cliente_id):
     'pages.view_solicitacao',
     raise_exception=True
 )
-def solicitacoes(request):
+def lista_solicitacoes(request):
     solicitacoes_qs = (
         Solicitacao.objects
         .select_related('cliente')
         .all()
     )
-    return render(request, 'pages/solicitacoes.html', { 'solicitacoes': solicitacoes_qs })
+    return render(request, 'pages/lista_solicitacoes.html', {'solicitacoes': solicitacoes_qs})
+
+@permission_required(
+    'pages.view_solicitacao',
+    raise_exception=True
+)
+def detalhe_solicitacao(request, id):
+    solicitacao = get_object_or_404(Solicitacao, id=id)
+    orcamento = getattr(solicitacao, 'orcamento', None)
+
+    return render(
+        request, 'pages/solicitacao_detalhe.html', {
+            'solicitacao': solicitacao,
+            'orcamento': orcamento
+        }
+    )
+
+@permission_required(
+    'pages.add_orcamento',
+    raise_exception=True
+)
+def criar_orcamento(request, id_solicitacao):
+    solicitacao = get_object_or_404(Solicitacao, id=id_solicitacao)
+
+    if hasattr(solicitacao, 'orcamento'):
+        return redirect('detalhe_solicitacao', id_solicitacao)
+
+    form = OrcamentoForm(request.POST or None)
+
+    if form.is_valid():
+        orcamento = form.save(commit=False)
+        orcamento.solicitacao = solicitacao
+        orcamento.save()
+
+        return redirect('detalhe_solicitacao', id_solicitacao)
+
+    return render(request, 'pages/orcamento_form.html', {
+        'form': form,
+        'solicitacao': solicitacao
+    })
