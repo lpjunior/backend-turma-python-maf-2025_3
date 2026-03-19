@@ -244,11 +244,11 @@ def detalhe_solicitacao(request, id):
     'pages.add_orcamento',
     raise_exception=True
 )
-def criar_orcamento(request, id_solicitacao):
-    solicitacao = get_object_or_404(Solicitacao, id=id_solicitacao)
+def criar_orcamento(request, solicitacao_id):
+    solicitacao = get_object_or_404(Solicitacao, id=solicitacao_id)
 
     if hasattr(solicitacao, 'orcamento'):
-        return redirect('detalhe_solicitacao', id_solicitacao)
+        return redirect('detalhe_solicitacao', solicitacao_id)
 
     form = OrcamentoForm(request.POST or None)
 
@@ -257,9 +257,11 @@ def criar_orcamento(request, id_solicitacao):
         orcamento.solicitacao = solicitacao
         orcamento.save()
 
-        return redirect('detalhe_solicitacao', id_solicitacao)
+        return redirect('detalhe_solicitacao', solicitacao_id)
 
     return render(request, 'pages/orcamento_form.html', {
         'form': form,
         'solicitacao': solicitacao
     })
+
+
