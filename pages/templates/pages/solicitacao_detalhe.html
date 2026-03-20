@@ -1,25 +1,128 @@
 {% extends "pages/base.html" %}
 
+{% block title %}Detalhe da Solicitação{% endblock %}
+
 {% block content %}
-<h2>Solicitação</h2>
 
-<p><strong>Cliente:</strong> {{ solicitacao.cliente.nome }}</p>
-<p><strong>Email:</strong> {{ solicitacao.cliente.email }}</p>
-<p><strong>Mensagem:</strong> {{ solicitacao.mensagem }}</p>
-<p><strong>Status:</strong> {{ solicitacao.get_status_display }}</p>
+<section class="container my-4">
 
-<hr>
+  <div class="card shadow-sm">
+    <div class="card-body">
 
-{% if orcamento %}
-<h3>Orçamento</h3>
-<p><strong>Título:</strong> {{ orcamento.titulo }}</p>
-<p><strong>Descrição:</strong> {{ orcamento.descricao }}</p>
-<p><strong>Valor:</strong> R$ {{ orcamento.valor_estimado }}</p>
-<p><strong>Status:</strong> {{ orcamento.get_status_display }}</p>
-{% else %}
-<a href="{% url 'criar_orcamento' solicitacao.id %}" class="btn btn-primary">
-    Criar Orçamento
-</a>
-{% endif %}
+      <!-- Cabeçalho -->
+      <header class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h4 mb-0">
+          <i class="fa-solid fa-file-lines me-2 text-primary"></i>
+          Detalhe da Solicitação
+        </h1>
+
+        <a href="{% url 'lista_solicitacoes' %}" class="btn btn-sm btn-outline-secondary">
+          <i class="fa-solid fa-arrow-left me-1"></i>
+          Voltar
+        </a>
+      </header>
+
+      <!-- Dados do Cliente -->
+      <div class="mb-4">
+        <h2 class="h6 text-muted mb-2">Cliente</h2>
+
+        <strong class="d-block">
+          {{ solicitacao.cliente.nome }}
+        </strong>
+
+        <a href="mailto:{{ solicitacao.cliente.email }}" class="text-muted small d-block">
+          {{ solicitacao.cliente.email }}
+        </a>
+
+        {% if solicitacao.cliente.telefone %}
+          <span class="text-muted small">
+            <i class="fa-solid fa-phone me-1"></i>
+            {{ solicitacao.cliente.telefone }}
+          </span>
+        {% endif %}
+      </div>
+
+      <!-- Status -->
+      <div class="mb-4">
+        <span class="badge
+          {% if solicitacao.status == 'pendente' %}bg-warning text-dark
+          {% elif solicitacao.status == 'lido' %}bg-info text-dark
+          {% elif solicitacao.status == 'respondido' %}bg-success
+          {% endif %}
+        ">
+          {{ solicitacao.get_status_display }}
+        </span>
+
+        <div class="small text-muted mt-1">
+          Enviado em {{ solicitacao.data_envio|date:"d/m/Y H:i" }}
+        </div>
+      </div>
+
+      <!-- Mensagem -->
+      <div class="mb-4">
+        <h2 class="h6 text-muted mb-2">Mensagem</h2>
+        <p class="mb-0">
+          {{ solicitacao.mensagem }}
+        </p>
+      </div>
+
+      <hr>
+
+      <!-- Orçamento -->
+      <div class="mt-4">
+
+        <h2 class="h5 mb-3">
+          <i class="fa-solid fa-file-invoice-dollar me-2 text-success"></i>
+          Orçamento
+        </h2>
+
+        {% if orcamento %}
+
+          <!-- Exibir orçamento existente -->
+          <div class="card border-success">
+            <div class="card-body">
+
+              <p class="mb-2">
+                <strong>Valor:</strong>
+                R$ {{ orcamento.valor }}
+              </p>
+
+              <p class="mb-2">
+                <strong>Descrição:</strong><br>
+                {{ orcamento.descricao }}
+              </p>
+
+              {% if orcamento.data_criacao %}
+                <p class="small text-muted mb-0">
+                  Criado em {{ orcamento.data_criacao|date:"d/m/Y H:i" }}
+                </p>
+              {% endif %}
+
+            </div>
+          </div>
+
+        {% else %}
+
+          <!-- Nenhum orçamento -->
+          <div class="alert alert-warning">
+            Nenhum orçamento foi criado para esta solicitação.
+          </div>
+
+          {% if perms.pages.add_orcamento %}
+            <a href="{% url 'criar_orcamento' solicitacao.id %}"
+               class="btn btn-success">
+              <i class="fa-solid fa-plus me-1"></i>
+              Criar Orçamento
+            </a>
+          {% endif %}
+
+        {% endif %}
+
+      </div>
+
+    </div>
+  </div>
+
+</section>
 
 {% endblock %}

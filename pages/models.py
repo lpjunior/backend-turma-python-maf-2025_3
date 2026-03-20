@@ -8,22 +8,18 @@ class Cliente(models.Model):
     ]
 
     nome = models.CharField(max_length=150, blank=False, null=False)
-    email = models.EmailField(max_length=150, blank=False, null=False)
-
+    email = models.EmailField(max_length=150, blank=False, null=False, unique=True)
     telefone = models.CharField(max_length=20, blank=False, null=False)
-
     tipo = models.CharField(max_length=2, choices=TIPO_CHOICES, default='pf')
-
     cep = models.CharField(max_length=9, blank=False, null=False)
     cidade = models.CharField(max_length=100, blank=False, null=False, default='')
     estado = models.CharField(max_length=2, blank=False, null=False, default='')
-
     data_cadastro = models.DateTimeField(auto_now_add=True)
-
     ativo = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'clientes'
+        ordering = ['-data_cadastro']
 
     def __str__(self):
         return f'{self.nome} <{self.email}> - status: {self.ativo}'

@@ -3,31 +3,24 @@
 {% block title %}Mensagem Recebida | SolarTech{% endblock %}
 
 {% block content %}
-
 <section aria-labelledby="contato-recebido" class="container my-5 d-flex justify-content-center">
-
   <div class="card border-0 shadow-sm text-center w-100" style="max-width: 600px;">
-
     <div class="card-body p-5">
 
-      <!-- Ícone -->
       <div class="mb-4">
         <i class="fa-solid fa-circle-check fa-3x text-success"></i>
       </div>
 
-      <!-- Título -->
       <h1 id="contato-recebido" class="h4 fw-semibold mb-3">
         Mensagem enviada com sucesso
       </h1>
 
-      <!-- Texto -->
       <p class="text-muted mb-4">
         Obrigado, <strong>{{ nome }}</strong>.<br>
         Recebemos sua mensagem e entraremos em contato pelo email
         <strong>{{ email }}</strong>.
       </p>
 
-      <!-- Ações -->
       <div class="d-flex justify-content-center gap-2 flex-wrap">
         <a href="{% url 'home' %}" class="btn btn-primary px-4">
           <i class="fa-solid fa-house me-1"></i>
@@ -41,9 +34,6 @@
       </div>
 
     </div>
-
   </div>
-
 </section>
-
 {% endblock %}

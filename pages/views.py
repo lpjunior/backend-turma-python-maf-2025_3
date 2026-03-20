@@ -2,13 +2,16 @@ import logging
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
+from django.db import transaction
 from django.db.models import Count
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect, \
     get_object_or_404
+from django.contrib import messages
 
 from pages.forms import SolicitacaoForm, ClienteForm, OrcamentoForm
-from pages.models import Solicitacao, Cliente
+from pages.models import Solicitacao, Cliente, Orcamento
+from pages.utils import enviar_orcamento_email
 
 logger = logging.getLogger(__name__)
 
@@ -27,21 +30,50 @@ def projetos(request):
 def depoimentos(request):
     return render(request, 'pages/depoimentos.html')
 
+@transaction.atomic
 def contato(request):
-    if request.method == "GET":
-        form = SolicitacaoForm()
-
-    else:
+    if request.method == "POST":
         form = SolicitacaoForm(request.POST)
 
         if form.is_valid():
             nome = form.cleaned_data['nome']
             email = form.cleaned_data['email']
+            telefone = form.cleaned_data['telefone']
+            tipo = form.cleaned_data['tipo']
+            cep = form.cleaned_data['cep']
+            cidade = form.cleaned_data['cidade']
+            estado = form.cleaned_data['estado']
+            mensagem = form.cleaned_data['mensagem']
 
-            # Salva os dados no banco de dados
-            form.save()
+            cliente, created = Cliente.objects.get_or_create(
+                email=email,
+                defaults={
+                    'nome': nome,
+                    'telefone': telefone,
+                    'tipo': tipo,
+                    'cep': cep,
+                    'cidade': cidade,
+                    'estado': estado,
+                    'ativo': True
+                }
+            )
 
-            # Exibe uma mensagem de sucesso
+            if not created:
+                cliente.nome = nome
+                cliente.telefone = telefone
+                cliente.tipo = tipo
+                cliente.cep = cep
+                cliente.cidade = cidade
+                cliente.estado = estado
+                cliente.ativo = True
+                cliente.save()
+
+            Solicitacao.objects.create(
+                cliente=cliente,
+                mensagem=mensagem,
+                status='pendente'
+            )
+
             return render(
                 request,
                 'pages/contato_sucesso.html',
@@ -51,12 +83,14 @@ def contato(request):
                 }
             )
 
+    else:
+        form = SolicitacaoForm()
+
     return render(
         request,
         'pages/contato.html',
         {'form': form}
     )
-
 
 # ========================
 #    Autenticação
@@ -110,11 +144,9 @@ def erro_403(request, exception=None):
 @login_required
 def dashboard(request):
     total_solicitacoes = Solicitacao.objects.count()
-
     pendentes = Solicitacao.objects.filter(status='pendente').count()
     lidas = Solicitacao.objects.filter(status='lido').count()
     respondidas = Solicitacao.objects.filter(status='respondido').count()
-
     total_clientes = Cliente.objects.count()
 
     contexto = {
@@ -130,28 +162,20 @@ def dashboard(request):
 # ========================
 #    Gestão, Clientes
 # ========================
-@permission_required(
-    'pages.view_cliente',
-    raise_exception=True
-)
+@permission_required('pages.view_cliente', raise_exception=True)
 def clientes(request):
     clientes_qs = (
         Cliente.objects
-        .annotate(total_solicitacoes=Count('mensagens'))
+        .annotate(total_solicitacoes=Count('solicitacoes'))
         .order_by('nome')
     )
 
     return render(request, 'pages/clientes.html', { 'clientes': clientes_qs })
 
-@permission_required(
-    'pages.view_cliente',
-    raise_exception=True
-)
-
+@permission_required('pages.view_cliente', raise_exception=True)
 def cliente_detalhe(request, id_cliente):
     cliente = get_object_or_404(Cliente, id=id_cliente)
-
-    solicitacoes = cliente.mensagens.all().order_by('-data_envio')
+    solicitacoes = cliente.solicitacoes.all().order_by('-data_envio')
 
     return render(
         request,
@@ -162,10 +186,7 @@ def cliente_detalhe(request, id_cliente):
         }
     )
 
-@permission_required(
-    'pages.add_cliente',
-    raise_exception=True
-)
+@permission_required('pages.add_cliente', raise_exception=True)
 def cliente_create(request):
     if request.method == "POST":
         form = ClienteForm(request.POST)
@@ -178,10 +199,7 @@ def cliente_create(request):
 
     return render(request, 'pages/cliente_form.html', {'form': form, "acao": "Criar"})
 
-@permission_required(
-    'pages.change_cliente',
-    raise_exception=True
-)
+@permission_required('pages.change_cliente', raise_exception=True)
 def cliente_update(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
 
@@ -196,10 +214,7 @@ def cliente_update(request, cliente_id):
 
     return render(request, 'pages/cliente_form.html', {'form': form, "acao": "Editar"})
 
-@permission_required(
-    'pages.delete_cliente',
-    raise_exception=True
-)
+@permission_required('pages.delete_cliente', raise_exception=True)
 def cliente_delete(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
 
@@ -213,24 +228,23 @@ def cliente_delete(request, cliente_id):
 # ========================
 #    Gestão, Solicitações
 # ========================
-@permission_required(
-    'pages.view_solicitacao',
-    raise_exception=True
-)
+@permission_required('pages.view_solicitacao', raise_exception=True)
 def lista_solicitacoes(request):
     solicitacoes_qs = (
         Solicitacao.objects
         .select_related('cliente')
-        .all()
+        .order_by('-data_envio')
     )
     return render(request, 'pages/lista_solicitacoes.html', {'solicitacoes': solicitacoes_qs})
 
-@permission_required(
-    'pages.view_solicitacao',
-    raise_exception=True
-)
-def detalhe_solicitacao(request, id):
-    solicitacao = get_object_or_404(Solicitacao, id=id)
+@permission_required('pages.view_solicitacao', raise_exception=True)
+def detalhe_solicitacao(request, solicitacao_id):
+    solicitacao = get_object_or_404(Solicitacao, id=solicitacao_id)
+
+    if solicitacao.status == 'pendente':
+        solicitacao.status = 'lido'
+        solicitacao.save(update_fields=['status'])
+
     orcamento = getattr(solicitacao, 'orcamento', None)
 
     return render(
@@ -240,28 +254,34 @@ def detalhe_solicitacao(request, id):
         }
     )
 
-@permission_required(
-    'pages.add_orcamento',
-    raise_exception=True
-)
+@permission_required('pages.add_orcamento', raise_exception=True)
+@transaction.atomic
 def criar_orcamento(request, solicitacao_id):
     solicitacao = get_object_or_404(Solicitacao, id=solicitacao_id)
 
-    if hasattr(solicitacao, 'orcamento'):
+    if Orcamento.objects.filter(solicitacao=solicitacao).exists():
+        messages.warning(request, 'Esta solicitação já possui um orçamento associado.')
         return redirect('detalhe_solicitacao', solicitacao_id)
 
-    form = OrcamentoForm(request.POST or None)
+    if request.method == "POST":
+        form = OrcamentoForm(request.POST)
 
-    if form.is_valid():
-        orcamento = form.save(commit=False)
-        orcamento.solicitacao = solicitacao
-        orcamento.save()
+        if form.is_valid():
+            orcamento = form.save(commit=False)
+            orcamento.solicitacao = solicitacao
+            orcamento.save()
 
-        return redirect('detalhe_solicitacao', solicitacao_id)
+            solicitacao.status = 'respondido'
+            solicitacao.save(update_fields=['status'])
+
+            enviar_orcamento_email(solicitacao, orcamento)
+
+            messages.success(request, 'Orçamento criado e enviado por email.')
+            return redirect('detalhe_solicitacao', solicitacao_id)
+    else:
+        form = OrcamentoForm()
 
     return render(request, 'pages/orcamento_form.html', {
         'form': form,
         'solicitacao': solicitacao
     })
-
-
