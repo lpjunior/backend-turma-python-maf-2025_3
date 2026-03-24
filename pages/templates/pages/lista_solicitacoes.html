@@ -3,101 +3,78 @@
 {% block title %}Solicitações de Orçamento - SolarTech{% endblock %}
 
 {% block content %}
-<section aria-labelledby="titulo-solicitacoes" class="container my-4">
-  <div class="card shadow-sm">
-    <div class="card-body">
 
-      <header class="d-flex align-items-center justify-content-between mb-4">
-        <div class="d-flex align-items-center">
-          <i class="fa-solid fa-file-signature fa-lg text-primary me-2" aria-hidden="true"></i>
-          <h1 id="titulo-solicitacoes" class="h4 mb-0">
-            Solicitações de Orçamento
-          </h1>
-        </div>
-      </header>
+<section class="py-5 bg-light border-bottom">
+  <div class="container">
+    <h1 class="display-6 fw-bold mb-2">Solicitações de Orçamento</h1>
+    <p class="text-muted mb-0">
+      Gerencie e acompanhe todas as solicitações recebidas.
+    </p>
+  </div>
+</section>
 
-      {% if solicitacoes %}
-        <ul class="list-group list-group-flush">
-          {% for solicitacao in solicitacoes %}
-            <li class="list-group-item py-4">
-              <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+<section class="py-5">
+  <div class="container">
 
-                <div>
-                  <strong class="d-block fs-6">
-                    {{ solicitacao.cliente.nome }}
-                  </strong>
+    {% if solicitacoes %}
+      <div class="row g-4">
 
-                  <a href="mailto:{{ solicitacao.cliente.email }}"
-                     class="text-decoration-none text-muted small">
-                    {{ solicitacao.cliente.email }}
-                  </a>
+        {% for solicitacao in solicitacoes %}
+          <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+              <div class="card-body p-4 d-flex flex-column">
 
-                  {% if solicitacao.cliente.telefone %}
-                    <div class="text-muted small">
-                      <i class="fa-solid fa-phone me-1"></i>
-                      {{ solicitacao.cliente.telefone }}
-                    </div>
-                  {% endif %}
-                </div>
+                <div class="d-flex justify-content-between mb-3">
+                  <div>
+                    <strong>{{ solicitacao.cliente.nome }}</strong><br>
+                    <small class="text-muted">{{ solicitacao.cliente.email }}</small>
+                  </div>
 
-                <div class="text-end">
                   <span class="badge
                     {% if solicitacao.status == 'pendente' %}bg-warning text-dark
                     {% elif solicitacao.status == 'lido' %}bg-info text-dark
                     {% elif solicitacao.status == 'respondido' %}bg-success
                     {% endif %}
-                    rounded-pill mb-2">
+                  ">
                     {{ solicitacao.get_status_display }}
                   </span>
+                </div>
 
-                  <div class="small text-muted">
+                <p class="text-muted mb-3">
+                  {{ solicitacao.mensagem }}
+                </p>
+
+                <div class="mt-auto d-flex justify-content-between align-items-center">
+                  <small class="text-muted">
                     {{ solicitacao.data_envio|date:"d/m/Y H:i" }}
+                  </small>
+
+                  <div class="d-flex gap-2">
+                    <a href="{% url 'detalhe_solicitacao' solicitacao.id %}" class="btn btn-sm btn-outline-secondary">
+                      Visualizar
+                    </a>
+
+                    {% if not solicitacao.orcamento and perms.pages.add_orcamento %}
+                      <a href="{% url 'criar_orcamento' solicitacao.id %}" class="btn btn-sm btn-success">
+                        Orçamento
+                      </a>
+                    {% endif %}
                   </div>
                 </div>
 
               </div>
+            </div>
+          </div>
+        {% endfor %}
 
-              <div class="mt-3">
-                <p class="mb-0">
-                  {{ solicitacao.mensagem }}
-                </p>
-              </div>
+      </div>
+    {% else %}
+      <div class="alert alert-info">
+        Nenhuma solicitação encontrada.
+      </div>
+    {% endif %}
 
-              {% if perms.pages.view_solicitacao %}
-                <div class="mt-3 d-flex gap-2">
-                  <a href="{% url 'detalhe_solicitacao' solicitacao.id %}"
-                     class="btn btn-sm btn-outline-secondary">
-                    <i class="fa-solid fa-eye me-1"></i>
-                    Visualizar
-                  </a>
-
-                  {% if not solicitacao.orcamento %}
-                    {% if perms.pages.add_orcamento %}
-                      <a href="{% url 'criar_orcamento' solicitacao.id %}"
-                         class="btn btn-sm btn-outline-success">
-                        <i class="fa-solid fa-file-invoice-dollar me-1"></i>
-                        Gerar orçamento
-                      </a>
-                    {% endif %}
-                  {% else %}
-                    <span class="btn btn-sm btn-outline-success disabled">
-                      <i class="fa-solid fa-check me-1"></i>
-                      Orçamento gerado
-                    </span>
-                  {% endif %}
-                </div>
-              {% endif %}
-            </li>
-          {% endfor %}
-        </ul>
-      {% else %}
-        <div class="alert alert-info mb-0" role="status">
-          <i class="fa-solid fa-circle-info me-2" aria-hidden="true"></i>
-          Nenhuma solicitação de orçamento foi recebida até o momento.
-        </div>
-      {% endif %}
-
-    </div>
   </div>
 </section>
+
 {% endblock %}

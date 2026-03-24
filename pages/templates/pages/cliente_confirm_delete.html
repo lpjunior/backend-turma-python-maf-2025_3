@@ -1,50 +1,35 @@
 {% extends "pages/base.html" %}
 
-{% block title %}Excluir pessoa, SolarTech{% endblock %}
+{% block title %}Excluir Cliente{% endblock %}
 
 {% block content %}
 
-<section class="container my-4" aria-labelledby="titulo-excluir-pessoa">
-  <div class="card shadow-sm border-danger">
-    <div class="card-body">
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
 
-      <h1 id="titulo-excluir-pessoa" class="h4 mb-3 text-danger">
-        <i class="fa-solid fa-triangle-exclamation me-2" aria-hidden="true"></i>
-        Confirmar exclusão
-      </h1>
+      <div class="col-lg-6">
+        <div class="card border-danger shadow-sm">
+          <div class="card-body p-4 text-center">
 
-      <p class="mb-3">
-        Você tem certeza que deseja excluir a pessoa abaixo?
-      </p>
-      <ul class="list-group mb-3">
-        <li class="list-group-item">
-          <strong>Nome:</strong>
-          <span class="ms-1">{{ pessoa.nome }}</span>
-        </li>
-        <li class="list-group-item">
-          <strong>Email:</strong>
-          <span class="ms-1">{{ pessoa.email }}</span>
-        </li>
-      </ul>
+            <i class="fa-solid fa-triangle-exclamation fa-2x text-danger mb-3"></i>
 
-      <div class="alert alert-warning" role="alert">
-        <i class="fa-solid fa-circle-info me-2" aria-hidden="true"></i>
-        Ao excluir esta pessoa, todas as mensagens associadas a ela também serão removidas.
+            <h1 class="h4 fw-bold mb-3">Confirmar exclusão</h1>
+
+            <p class="text-muted">
+              Tem certeza que deseja excluir <strong>{{ pessoa.nome }}</strong>?
+            </p>
+
+            <form method="post" class="d-flex justify-content-center gap-2 mt-4">
+              {% csrf_token %}
+              <button class="btn btn-danger">Excluir</button>
+              <a href="{% url 'clientes' %}" class="btn btn-outline-secondary">Cancelar</a>
+            </form>
+
+          </div>
+        </div>
       </div>
 
-      <form method="post" class="d-flex gap-2">
-        {% csrf_token %}
-
-        <button class="btn btn-danger" type="submit">
-          <i class="fa-solid fa-trash me-2" aria-hidden="true"></i>
-          Excluir
-        </button>
-
-        <a href="{% url 'pessoas' %}" class="btn btn-outline-secondary">
-          <i class="fa-solid fa-xmark me-2" aria-hidden="true"></i>
-          Cancelar
-        </a>
-      </form>
     </div>
   </div>
 </section>

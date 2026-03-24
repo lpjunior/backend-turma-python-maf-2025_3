@@ -4,125 +4,72 @@
 
 {% block content %}
 
-<section class="container my-4">
+<section class="py-5">
+  <div class="container">
 
-  <div class="card shadow-sm">
-    <div class="card-body">
+    <div class="row g-4">
 
-      <!-- Cabeçalho -->
-      <header class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h4 mb-0">
-          <i class="fa-solid fa-file-lines me-2 text-primary"></i>
-          Detalhe da Solicitação
-        </h1>
+      <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+          <div class="card-body p-4">
 
-        <a href="{% url 'lista_solicitacoes' %}" class="btn btn-sm btn-outline-secondary">
-          <i class="fa-solid fa-arrow-left me-1"></i>
-          Voltar
-        </a>
-      </header>
+            <h1 class="h4 fw-bold mb-4">Detalhe da Solicitação</h1>
 
-      <!-- Dados do Cliente -->
-      <div class="mb-4">
-        <h2 class="h6 text-muted mb-2">Cliente</h2>
+            <div class="mb-4">
+              <strong>Cliente:</strong><br>
+              {{ solicitacao.cliente.nome }}<br>
+              <small class="text-muted">{{ solicitacao.cliente.email }}</small>
+            </div>
 
-        <strong class="d-block">
-          {{ solicitacao.cliente.nome }}
-        </strong>
+            <div class="mb-4">
+              <strong>Status:</strong><br>
+              <span class="badge
+                {% if solicitacao.status == 'pendente' %}bg-warning text-dark
+                {% elif solicitacao.status == 'lido' %}bg-info text-dark
+                {% elif solicitacao.status == 'respondido' %}bg-success
+                {% endif %}
+              ">
+                {{ solicitacao.get_status_display }}
+              </span>
+            </div>
 
-        <a href="mailto:{{ solicitacao.cliente.email }}" class="text-muted small d-block">
-          {{ solicitacao.cliente.email }}
-        </a>
+            <div>
+              <strong>Mensagem:</strong>
+              <p class="mt-2 mb-0">{{ solicitacao.mensagem }}</p>
+            </div>
 
-        {% if solicitacao.cliente.telefone %}
-          <span class="text-muted small">
-            <i class="fa-solid fa-phone me-1"></i>
-            {{ solicitacao.cliente.telefone }}
-          </span>
-        {% endif %}
-      </div>
-
-      <!-- Status -->
-      <div class="mb-4">
-        <span class="badge
-          {% if solicitacao.status == 'pendente' %}bg-warning text-dark
-          {% elif solicitacao.status == 'lido' %}bg-info text-dark
-          {% elif solicitacao.status == 'respondido' %}bg-success
-          {% endif %}
-        ">
-          {{ solicitacao.get_status_display }}
-        </span>
-
-        <div class="small text-muted mt-1">
-          Enviado em {{ solicitacao.data_envio|date:"d/m/Y H:i" }}
+          </div>
         </div>
       </div>
 
-      <!-- Mensagem -->
-      <div class="mb-4">
-        <h2 class="h6 text-muted mb-2">Mensagem</h2>
-        <p class="mb-0">
-          {{ solicitacao.mensagem }}
-        </p>
-      </div>
+      <div class="col-lg-4">
+        <div class="card shadow-sm border-0">
+          <div class="card-body p-4">
 
-      <hr>
+            <h2 class="h6 fw-bold mb-3">Orçamento</h2>
 
-      <!-- Orçamento -->
-      <div class="mt-4">
+            {% if orcamento %}
+              <p><strong>Valor:</strong> R$ {{ orcamento.valor }}</p>
+              <p>{{ orcamento.descricao }}</p>
+            {% else %}
+              <div class="alert alert-warning">
+                Nenhum orçamento criado.
+              </div>
 
-        <h2 class="h5 mb-3">
-          <i class="fa-solid fa-file-invoice-dollar me-2 text-success"></i>
-          Orçamento
-        </h2>
-
-        {% if orcamento %}
-
-          <!-- Exibir orçamento existente -->
-          <div class="card border-success">
-            <div class="card-body">
-
-              <p class="mb-2">
-                <strong>Valor:</strong>
-                R$ {{ orcamento.valor }}
-              </p>
-
-              <p class="mb-2">
-                <strong>Descrição:</strong><br>
-                {{ orcamento.descricao }}
-              </p>
-
-              {% if orcamento.data_criacao %}
-                <p class="small text-muted mb-0">
-                  Criado em {{ orcamento.data_criacao|date:"d/m/Y H:i" }}
-                </p>
+              {% if perms.pages.add_orcamento %}
+                <a href="{% url 'criar_orcamento' solicitacao.id %}" class="btn btn-success w-100">
+                  Criar Orçamento
+                </a>
               {% endif %}
+            {% endif %}
 
-            </div>
           </div>
-
-        {% else %}
-
-          <!-- Nenhum orçamento -->
-          <div class="alert alert-warning">
-            Nenhum orçamento foi criado para esta solicitação.
-          </div>
-
-          {% if perms.pages.add_orcamento %}
-            <a href="{% url 'criar_orcamento' solicitacao.id %}"
-               class="btn btn-success">
-              <i class="fa-solid fa-plus me-1"></i>
-              Criar Orçamento
-            </a>
-          {% endif %}
-
-        {% endif %}
-
+        </div>
       </div>
 
     </div>
-  </div>
 
+  </div>
 </section>
 
 {% endblock %}

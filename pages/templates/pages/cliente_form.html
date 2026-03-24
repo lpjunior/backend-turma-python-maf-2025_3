@@ -1,234 +1,49 @@
 {% extends "pages/base.html" %}
 
 {% block title %}
-  {% if form.instance.pk %}
-    Editar Cliente - SolarTech
-  {% else %}
-    Novo Cliente - SolarTech
-  {% endif %}
+  {% if form.instance.pk %}Editar Cliente{% else %}Novo Cliente{% endif %}
 {% endblock %}
 
 {% block content %}
 
-<section class="container my-4">
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
 
-  <div class="card shadow-sm">
-    <div class="card-body">
+      <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+          <div class="card-body p-4">
 
-      <!-- Título -->
-      <header class="d-flex align-items-center mb-4">
-        <i class="fa-solid fa-user-plus fa-lg text-primary me-2"></i>
-        <h1 class="h4 mb-0">
-          {% if form.instance.pk %}
-            Editar Cliente
-          {% else %}
-            Cadastrar Novo Cliente
-          {% endif %}
-        </h1>
-      </header>
+            <h1 class="h4 fw-bold mb-4">
+              {% if form.instance.pk %}Editar Cliente{% else %}Novo Cliente{% endif %}
+            </h1>
 
-      <!-- Formulário -->
-      <form method="post" novalidate>
-        {% csrf_token %}
+            <form method="post">
+              {% csrf_token %}
 
-        <div class="row g-3">
-
-          <!-- Nome -->
-          <div class="col-md-6">
-            <label for="id_nome" class="form-label">Nome</label>
-            {{ form.nome }}
-            {% if form.nome.errors %}
-              <div class="text-danger small">
-                {{ form.nome.errors }}
+              <div class="row g-3">
+                <div class="col-md-6">{{ form.nome }}</div>
+                <div class="col-md-6">{{ form.email }}</div>
+                <div class="col-md-6">{{ form.telefone }}</div>
+                <div class="col-md-6">{{ form.tipo }}</div>
+                <div class="col-md-4">{{ form.cep }}</div>
+                <div class="col-md-4">{{ form.cidade }}</div>
+                <div class="col-md-4">{{ form.estado }}</div>
               </div>
-            {% endif %}
-          </div>
 
-          <!-- Email -->
-          <div class="col-md-6">
-            <label for="id_email" class="form-label">Email</label>
-            {{ form.email }}
-            {% if form.email.errors %}
-              <div class="text-danger small">
-                {{ form.email.errors }}
+              <div class="mt-4 d-flex justify-content-between">
+                <a href="{% url 'clientes' %}" class="btn btn-outline-secondary">Voltar</a>
+                <button class="btn btn-primary">Salvar</button>
               </div>
-            {% endif %}
-          </div>
 
-          <!-- Telefone -->
-          <div class="col-md-6">
-            <label for="id_telefone" class="form-label">Telefone</label>
-            {{ form.telefone }}
-            {% if form.telefone.errors %}
-              <div class="text-danger small">
-                {{ form.telefone.errors }}
-              </div>
-            {% endif %}
-          </div>
+            </form>
 
-          <!-- Tipo -->
-          <div class="col-md-6">
-            <label for="id_tipo" class="form-label">Tipo de Cliente</label>
-            {{ form.tipo }}
-            {% if form.tipo.errors %}
-              <div class="text-danger small">
-                {{ form.tipo.errors }}
-              </div>
-            {% endif %}
           </div>
-
-          <!-- CEP -->
-          <div class="col-md-4">
-            <label for="id_cep" class="form-label">CEP</label>
-            {{ form.cep }}
-            {% if form.cep.errors %}
-              <div class="text-danger small">
-                {{ form.cep.errors }}
-              </div>
-            {% endif %}
-          </div>
-
-          <!-- Cidade -->
-          <div class="col-md-4">
-            <label for="id_cidade" class="form-label">Cidade</label>
-            {{ form.cidade }}
-            {% if form.cidade.errors %}
-              <div class="text-danger small">
-                {{ form.cidade.errors }}
-              </div>
-            {% endif %}
-          </div>
-
-          <!-- Estado -->
-          <div class="col-md-4">
-            <label for="id_estado" class="form-label">Estado</label>
-            {{ form.estado }}
-            {% if form.estado.errors %}
-              <div class="text-danger small">
-                {{ form.estado.errors }}
-              </div>
-            {% endif %}
-          </div>
-
         </div>
-
-        <!-- Botões -->
-        <div class="mt-4 d-flex justify-content-between">
-
-          <a href="{% url 'pessoas' %}" class="btn btn-outline-secondary">
-            <i class="fa-solid fa-arrow-left me-1"></i>
-            Voltar
-          </a>
-
-          <button type="submit" class="btn btn-primary">
-            <i class="fa-solid fa-save me-1"></i>
-            Salvar
-          </button>
-
-        </div>
-
-      </form>
+      </div>
 
     </div>
   </div>
-
 </section>
-
-{% endblock %}
-
-<!-- Script unificado para mascarar os campos de CEP e telefone e consultar o CEP -->
-{% block extra_scripts %}
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-
-  const cepInput = document.getElementById("id_cep");
-  const telefoneInput = document.getElementById("id_telefone");
-  const cidadeInput = document.getElementById("id_cidade");
-  const estadoInput = document.getElementById("id_estado");
-
-  /* -----------------------------
-  MÁSCARAS
-  ----------------------------- */
-
-  if (cepInput) {
-    IMask(cepInput, {
-      mask: "00000-000"
-    });
-  }
-
-  if (telefoneInput) {
-    IMask(telefoneInput, {
-      mask: [
-        { mask: "(00) 0000-0000" },
-        { mask: "(00) 00000-0000" }
-      ]
-    });
-  }
-
-  /* -----------------------------
-  FUNÇÕES AUXILIARES
-  ----------------------------- */
-
-  function limparEndereco() {
-    if (cidadeInput) cidadeInput.value = "";
-    if (estadoInput) estadoInput.value = "";
-  }
-
-  function mostrarLoading() {
-    if (cidadeInput) cidadeInput.value = "Carregando...";
-    if (estadoInput) estadoInput.value = "...";
-  }
-
-  /* -----------------------------
-  BUSCA CEP
-  ----------------------------- */
-
-  async function buscarCEP(cep) {
-
-    try {
-
-      mostrarLoading();
-
-      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-      const data = await response.json();
-
-      if (data.error) {
-        limparEndereco();
-        return;
-      }
-
-      if (cidadeInput) cidadeInput.value = data.localidade || "";
-      if (estadoInput) estadoInput.value = data.uf || "";
-
-    } catch (error) {
-
-      console.log("Erro ao consultar CEP");
-      limparEndereco();
-
-    }
-
-  }
-
-  /* -----------------------------
-  EVENTO CEP
-  ----------------------------- */
-
-  if (cepInput) {
-
-    cepInput.addEventListener("blur", function() {
-
-      const cep = cepInput.value.replace(/\D/g, "");
-
-      if (cep.length === 8) {
-        buscarCEP(cep);
-      }
-
-    });
-
-  }
-
-});
-</script>
 
 {% endblock %}

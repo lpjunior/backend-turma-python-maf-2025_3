@@ -4,52 +4,102 @@
 
 {% block content %}
 
-<section class="container my-5 d-flex justify-content-center">
+<section class="py-5 bg-light border-bottom">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-xl-10">
+        <div class="row g-4 align-items-stretch">
 
-  <div class="card border-0 shadow-sm w-100" style="max-width: 420px;">
+          <div class="col-lg-6">
+            <div class="h-100 d-flex flex-column justify-content-center pe-lg-4">
+              <span class="badge bg-warning text-dark mb-3 align-self-start">
+                Área de acesso restrito
+              </span>
 
-    <div class="card-body p-4">
+              <h1 class="display-6 fw-bold mb-3">Acesso ao sistema</h1>
 
-      <!-- Cabeçalho -->
-      <div class="text-center mb-4">
-        <i class="fa-solid fa-user-lock fa-2x text-success mb-2"></i>
-        <h1 class="h4 fw-semibold mb-0">Acesso ao sistema</h1>
+              <p class="lead text-muted mb-4">
+                Entre com suas credenciais para acessar o painel da aplicação com o mesmo padrão visual
+                do restante do site.
+              </p>
+
+              <div class="row g-3">
+                <div class="col-sm-6">
+                  <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                      <i class="fa-solid fa-shield-halved text-primary fs-3 mb-3"></i>
+                      <h2 class="h6 fw-semibold">Acesso seguro</h2>
+                      <p class="text-muted mb-0">
+                        Ambiente de login organizado e objetivo para autenticação.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-6">
+                  <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                      <i class="fa-solid fa-user-lock text-success fs-3 mb-3"></i>
+                      <h2 class="h6 fw-semibold">Experiência consistente</h2>
+                      <p class="text-muted mb-0">
+                        Visual alinhado às páginas institucionais da SolarTech.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body p-4 p-lg-5 d-flex flex-column justify-content-center">
+
+                <div class="text-center mb-4">
+                  <div class="rounded-circle bg-success bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width: 68px; height: 68px;">
+                    <i class="fa-solid fa-user-lock fa-2x text-success"></i>
+                  </div>
+                  <h2 class="h3 fw-bold mb-2">Entrar</h2>
+                  <p class="text-muted mb-0">
+                    Informe seu usuário e senha para continuar.
+                  </p>
+                </div>
+
+                {% if erro %}
+                  <div class="alert alert-danger text-center">
+                    {{ erro }}
+                  </div>
+                {% endif %}
+
+                <form method="post" novalidate>
+                  {% csrf_token %}
+
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Usuário</label>
+                    <input class="form-control form-control-lg" type="text" name="username" required>
+                  </div>
+
+                  <div class="mb-4">
+                    <label class="form-label fw-semibold">Senha</label>
+                    <input class="form-control form-control-lg" type="password" name="password" required>
+                  </div>
+
+                  <div class="d-grid">
+                    <button class="btn btn-success btn-lg" type="submit">
+                      <i class="fa-solid fa-arrow-right-to-bracket me-2"></i>
+                      Entrar
+                    </button>
+                  </div>
+                </form>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
-
-      <!-- Erro -->
-      {% if erro %}
-        <div class="alert alert-danger text-center">
-          {{ erro }}
-        </div>
-      {% endif %}
-
-      <!-- Formulário -->
-      <form method="post" novalidate>
-        {% csrf_token %}
-
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Usuário</label>
-          <input class="form-control" type="text" name="username" required>
-        </div>
-
-        <div class="mb-4">
-          <label class="form-label fw-semibold">Senha</label>
-          <input class="form-control" type="password" name="password" required>
-        </div>
-
-        <div class="d-grid">
-          <button class="btn btn-success btn-lg" type="submit">
-            <i class="fa-solid fa-arrow-right-to-bracket me-2"></i>
-            Entrar
-          </button>
-        </div>
-
-      </form>
-
     </div>
-
   </div>
-
 </section>
 
 {% endblock %}

@@ -200,8 +200,8 @@ def cliente_create(request):
     return render(request, 'pages/cliente_form.html', {'form': form, "acao": "Criar"})
 
 @permission_required('pages.change_cliente', raise_exception=True)
-def cliente_update(request, cliente_id):
-    cliente = get_object_or_404(Cliente, id=cliente_id)
+def cliente_update(request, id_cliente):
+    cliente = get_object_or_404(Cliente, id=id_cliente)
 
     if request.method == "POST":
         form = ClienteForm(request.POST, instance=cliente)
@@ -215,8 +215,8 @@ def cliente_update(request, cliente_id):
     return render(request, 'pages/cliente_form.html', {'form': form, "acao": "Editar"})
 
 @permission_required('pages.delete_cliente', raise_exception=True)
-def cliente_delete(request, cliente_id):
-    cliente = get_object_or_404(Cliente, id=cliente_id)
+def cliente_delete(request, id_cliente):
+    cliente = get_object_or_404(Cliente, id=id_cliente)
 
     if request.method == "POST":
         cliente.delete()

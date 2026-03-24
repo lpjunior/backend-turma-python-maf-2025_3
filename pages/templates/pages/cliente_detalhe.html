@@ -1,10 +1,184 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "pages/base.html" %}
 
-</body>
-</html>
+{% block title %}Detalhe do Cliente | SolarTech{% endblock %}
+
+{% block content %}
+
+<section class="py-5 bg-light border-bottom">
+  <div class="container">
+    <div class="row align-items-center justify-content-between g-4">
+
+      <div class="col-lg-8">
+        <span class="badge bg-primary-subtle text-primary border mb-3">
+          Área administrativa
+        </span>
+
+        <h1 class="display-6 fw-bold mb-2">
+          Detalhe do Cliente
+        </h1>
+
+        <p class="text-muted mb-0">
+          Visualização completa dos dados do cliente e histórico de interações.
+        </p>
+      </div>
+
+      <div class="col-lg-4 text-lg-end">
+        <a href="{% url 'clientes' %}" class="btn btn-outline-secondary">
+          <i class="fa-solid fa-arrow-left me-1"></i>
+          Voltar
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+
+    <div class="row g-4">
+
+      <!-- Dados do Cliente -->
+      <div class="col-lg-4">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body p-4">
+
+            <h2 class="h5 fw-bold mb-4">Informações do Cliente</h2>
+
+            <div class="mb-3">
+              <small class="text-muted">Nome</small>
+              <div class="fw-semibold">{{ cliente.nome }}</div>
+            </div>
+
+            <div class="mb-3">
+              <small class="text-muted">Email</small>
+              <div>
+                <a href="mailto:{{ cliente.email }}" class="text-decoration-none">
+                  {{ cliente.email }}
+                </a>
+              </div>
+            </div>
+
+            {% if cliente.telefone %}
+            <div class="mb-3">
+              <small class="text-muted">Telefone</small>
+              <div>{{ cliente.telefone }}</div>
+            </div>
+            {% endif %}
+
+            {% if cliente.tipo %}
+            <div class="mb-3">
+              <small class="text-muted">Tipo</small>
+              <div>{{ cliente.tipo }}</div>
+            </div>
+            {% endif %}
+
+            {% if cliente.cidade or cliente.estado %}
+            <div class="mb-3">
+              <small class="text-muted">Localização</small>
+              <div>
+                {{ cliente.cidade }}{% if cliente.estado %} - {{ cliente.estado }}{% endif %}
+              </div>
+            </div>
+            {% endif %}
+
+            <div class="mt-4 d-flex gap-2 flex-wrap">
+
+              {% if perms.pages.change_cliente %}
+              <a href="{% url 'cliente_update' cliente.pk %}" class="btn btn-outline-secondary btn-sm">
+                <i class="fa-solid fa-pen-to-square me-1"></i>
+                Editar
+              </a>
+              {% endif %}
+
+              {% if perms.pages.delete_cliente %}
+              <a href="{% url 'cliente_delete' cliente.pk %}" class="btn btn-outline-danger btn-sm">
+                <i class="fa-solid fa-trash me-1"></i>
+                Excluir
+              </a>
+              {% endif %}
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Histórico / Mensagens -->
+      <div class="col-lg-8">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body p-4">
+
+            <h2 class="h5 fw-bold mb-4">Histórico de Solicitações</h2>
+
+            {% if solicitacoes %}
+
+              <div class="d-flex flex-column gap-3">
+
+                {% for solicitacao in solicitacoes %}
+                  <div class="card border-0 shadow-sm">
+                    <div class="card-body p-3">
+
+                      <div class="d-flex justify-content-between align-items-start mb-2">
+
+                        <span class="badge
+                          {% if solicitacao.status == 'pendente' %}bg-warning text-dark
+                          {% elif solicitacao.status == 'lido' %}bg-info text-dark
+                          {% elif solicitacao.status == 'respondido' %}bg-success
+                          {% endif %}
+                        ">
+                          {{ solicitacao.get_status_display }}
+                        </span>
+
+                        <small class="text-muted">
+                          {{ solicitacao.data_envio|date:"d/m/Y H:i" }}
+                        </small>
+
+                      </div>
+
+                      <p class="text-muted mb-3">
+                        {{ solicitacao.mensagem }}
+                      </p>
+
+                      <div class="d-flex gap-2 flex-wrap">
+
+                        <a href="{% url 'detalhe_solicitacao' solicitacao.id %}"
+                           class="btn btn-sm btn-outline-secondary">
+                          <i class="fa-solid fa-eye me-1"></i>
+                          Ver detalhes
+                        </a>
+
+                        {% if not solicitacao.orcamento and perms.pages.add_orcamento %}
+                          <a href="{% url 'criar_orcamento' solicitacao.id %}"
+                             class="btn btn-sm btn-success">
+                            <i class="fa-solid fa-file-invoice-dollar me-1"></i>
+                            Gerar orçamento
+                          </a>
+                        {% endif %}
+
+                      </div>
+
+                    </div>
+                  </div>
+                {% endfor %}
+
+              </div>
+
+            {% else %}
+
+              <div class="alert alert-info mb-0">
+                Nenhuma solicitação encontrada para este cliente.
+              </div>
+
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
