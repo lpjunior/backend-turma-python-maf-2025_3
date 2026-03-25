@@ -17,14 +17,28 @@ urlpatterns = [
     #   Area administrativa
     # ========================
     path('gestao/', views.dashboard, name='dashboard'),
+
+    # ========================
+    #   Gestão de Clientes
+    # ========================
     path('gestao/clientes', views.clientes, name='clientes'),
     path('gestao/cliente/novo/', views.cliente_create, name='cliente_create'),
-    path('gestao/cliente/<int:id_cliente>', views.cliente_detalhe, name='cliente_detalhe'),
-    path('gestao/cliente/<int:id_cliente>/editar', views.cliente_update, name='cliente_update'),
-    path('gestao/cliente/<int:id_cliente>/excluir', views.cliente_delete, name='cliente_delete'),
+    path('gestao/cliente/<int:cliente_id>', views.cliente_detalhe, name='cliente_detalhe'),
+    path('gestao/cliente/<int:cliente_id>/editar', views.cliente_update, name='cliente_update'),
+    path('gestao/cliente/<int:cliente_id>/excluir', views.cliente_delete, name='cliente_delete'),
 
+    # ========================
+    #   Gestão de Projetos
+    # ========================
+    path('gestao/projetos/', views.projetos_admin, name='projetos_admin'),
+    path('gestao/projetos/novo', views.projeto_create, name='projeto_create'),
+    path('gestao/projetos/<int:projeto_id>/editar', views.projeto_update, name='projeto_update'),
+    path('gestao/projetos/<int:projeto_id>/excluir', views.projeto_delete, name='projeto_delete'),
+
+    # ========================
+    #   Gestão de Solicitações
+    # ========================
     path('gestao/solicitacoes/', views.lista_solicitacoes, name='lista_solicitacoes'),
     path('gestao/solicitacoes/<int:solicitacao_id>/', views.detalhe_solicitacao, name='detalhe_solicitacao'),
-
     path('gestao/solicitacoes/<int:solicitacao_id>/orcamento', views.criar_orcamento, name='criar_orcamento'),
 ]

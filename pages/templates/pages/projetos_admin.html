@@ -1,0 +1,83 @@
+{% extends "pages/base.html" %}
+
+{% block title %}Gestão de Projetos | SolarTech{% endblock %}
+
+{% block content %}
+
+<section class="container my-4">
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+
+      <header class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex align-items-center">
+          <i class="fa-solid fa-diagram-project fa-lg text-primary me-2"></i>
+          <h1 class="h4 mb-0">Gestão de Projetos</h1>
+        </div>
+
+        <a href="{% url 'projeto_create' %}" class="btn btn-success">
+          <i class="fa-solid fa-plus me-2"></i>
+          Novo Projeto
+        </a>
+      </header>
+
+      {% if projetos %}
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Subdescrição</th>
+                <th>Categoria</th>
+                <th>Ativo</th>
+                <th class="text-end">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for projeto in projetos %}
+                <tr>
+                  <td>{{ projeto.titulo }}</td>
+                  <td>{{ projeto.subdescricao }}</td>
+                  <td>
+                    <span class="badge
+                      {% if projeto.categoria == 'residencial' %}bg-primary
+                      {% elif projeto.categoria == 'comercial' %}bg-success
+                      {% elif projeto.categoria == 'rural' %}bg-warning text-dark
+                      {% else %}bg-dark
+                      {% endif %}">
+                      {{ projeto.get_categoria_display }}
+                    </span>
+                  </td>
+                  <td>
+                    {% if projeto.ativo %}
+                      <span class="badge bg-success">Sim</span>
+                    {% else %}
+                      <span class="badge bg-secondary">Não</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-end">
+                    <a href="{% url 'projeto_update' projeto.id %}" class="btn btn-sm btn-warning">
+                      Editar
+                    </a>
+                    <a href="{% url 'projeto_delete' projeto.id %}" class="btn btn-sm btn-danger">
+                      Excluir
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="alert alert-info mb-0" role="status">
+          <i class="fa-solid fa-circle-info me-2" aria-hidden="true"></i>
+          Nenhum projeto cadastrado até o momento.
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+
+</section>
+
+{% endblock %}

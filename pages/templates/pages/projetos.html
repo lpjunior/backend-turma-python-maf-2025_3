@@ -65,87 +65,49 @@
       </p>
     </div>
 
+    {% if projetos %}
     <div class="row g-4">
-
+      {% for projeto in projetos %}
       <div class="col-md-6 col-lg-4">
         <div class="card shadow-sm h-100 border-0 overflow-hidden">
           <img
-            src="https://images.unsplash.com/photo-1497440001374-f26997328c1b?auto=format&fit=crop&w=1200&q=80"
+            src="{{ projeto.imagem }}"
             class="card-img-top"
-            alt="Projeto residencial"
+            alt="{{ projeto.titulo }}"
             style="height: 240px; object-fit: cover;"
           >
           <div class="card-body p-4 d-flex flex-column">
             <div class="mb-3">
-              <span class="badge bg-primary-subtle text-primary border">Residencial</span>
+              <span class="badge
+               {% if projeto.categoria == 'residencial' %}bg-primary-subtle text-primary
+               {% elif projeto.categoria == 'comercial' %}bg-success-subtle text-success
+               {% elif projeto.categoria == 'rural' %}bg-warning text-dark
+               {% else %}bg-dark-subtle text-dark
+               {% endif %}
+               border">
+                {{ projeto.get_categoria_display }}
+              </span>
             </div>
-            <h3 class="h5 fw-semibold mb-3">Sistema Residencial</h3>
+            <h3 class="h5 fw-semibold mb-3">{{ projeto.titulo }}</h3>
             <p class="text-muted mb-4">
-              Instalação em residência com foco na redução da conta de energia e no melhor aproveitamento
-              do consumo mensal.
+              {{ projeto.descricao }}
             </p>
             <div class="mt-auto pt-3 border-top">
               <small class="text-muted">
-                Solução ideal para clientes que buscam economia recorrente e valorização do imóvel.
+                {{ projeto.tagline }}
               </small>
             </div>
           </div>
         </div>
       </div>
-
-      <div class="col-md-6 col-lg-4">
-        <div class="card shadow-sm h-100 border-0 overflow-hidden">
-          <img
-            src="https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&w=1200&q=80"
-            class="card-img-top"
-            alt="Projeto comercial"
-            style="height: 240px; object-fit: cover;"
-          >
-          <div class="card-body p-4 d-flex flex-column">
-            <div class="mb-3">
-              <span class="badge bg-success-subtle text-success border">Comercial</span>
-            </div>
-            <h3 class="h5 fw-semibold mb-3">Sistema Comercial</h3>
-            <p class="text-muted mb-4">
-              Instalação realizada em empresa para redução de custos operacionais e maior previsibilidade
-              no orçamento energético.
-            </p>
-            <div class="mt-auto pt-3 border-top">
-              <small class="text-muted">
-                Indicado para operações que exigem controle de despesa e maior eficiência financeira.
-              </small>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6 col-lg-4">
-        <div class="card shadow-sm h-100 border-0 overflow-hidden">
-          <img
-            src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=1200&q=80"
-            class="card-img-top"
-            alt="Projeto rural"
-            style="height: 240px; object-fit: cover;"
-          >
-          <div class="card-body p-4 d-flex flex-column">
-            <div class="mb-3">
-              <span class="badge bg-warning text-dark border">Rural</span>
-            </div>
-            <h3 class="h5 fw-semibold mb-3">Sistema Rural</h3>
-            <p class="text-muted mb-4">
-              Solução de geração de energia aplicada em propriedade rural, com foco em estabilidade
-              e suporte à operação diária.
-            </p>
-            <div class="mt-auto pt-3 border-top">
-              <small class="text-muted">
-                Adequado para cenários que demandam continuidade, escala e eficiência no campo.
-              </small>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      {% endfor %}
     </div>
+    {% else %}
+    <div class="alert alert-info mb-0" role="status">
+      <i class="fa-solid fa-info-circle me-2" aria-hidden="true"></i>
+      Nenhum projeto cadastrado no momento. Por favor, volte mais tarde para conferir as novidades!
+    </div>
+    {% endif %}
 
   </div>
 </section>

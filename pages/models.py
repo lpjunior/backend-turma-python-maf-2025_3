@@ -90,3 +90,30 @@ class Orcamento(models.Model):
 
     def __str__(self):
         return f'Orçamento de: {self.id}, {self.solicitacao.cliente.nome} <{self.solicitacao.cliente.email}>'
+
+class Projeto(models.Model):
+    CATEGORIA_CHOICES = [
+        ('residencial',  'Residencial'),
+        ('comercial', 'Comercial'),
+        ('rural', 'Rural'),
+        ('governamental', 'Governamental'),
+    ]
+
+    titulo = models.CharField(max_length=200)
+    descricao = models.TextField(blank=False, null=False)
+    tagline = models.CharField(max_length=255)
+    categoria = models.CharField(
+        max_length=20,
+        choices=CATEGORIA_CHOICES,
+        default='residencial'
+    )
+    imagem = models.URLField()
+    criado_em = models.DateTimeField(auto_now_add=True)
+    ativo = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = 'projetos'
+        ordering = ['-criado_em']
+
+    def __str__(self):
+        return f'{self.titulo} - {self.get_categoria_display()}'

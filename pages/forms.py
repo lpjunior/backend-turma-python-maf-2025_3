@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from pages.models import Cliente, Solicitacao, Orcamento
+from pages.models import Cliente, Solicitacao, Orcamento, Projeto
 
 
 class SolicitacaoForm(forms.ModelForm):
@@ -203,3 +203,48 @@ class OrcamentoForm(forms.ModelForm):
                 'class': 'form-select'
             })
         }
+
+class ProjetoForm(forms.ModelForm):
+    imagem_file = forms.ImageField(required=True)
+
+    class Meta:
+        model = Projeto
+        fields = ['titulo', 'descricao', 'tagline', 'categoria']
+        widgets = {
+            'titulo': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'descricao': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'tagline': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'categoria': forms.Select(attrs={
+                'class': 'form-select'
+            }),
+        }
+
+    def clean_titulo(self):
+        titulo = (self.cleaned_data.get('titulo') or '').strip()
+
+        if len(titulo) < 3:
+            raise forms.ValidationError('O titulo deve conter pelo menos 3 caracteres.')
+
+        return titulo
+
+    def clean_descricao(self):
+        descricao = (self.cleaned_data.get('descricao') or '').strip()
+
+        if len(descricao) < 10:
+            raise forms.ValidationError('A descrição deve conter pelo menos 10 caracteres.')
+
+        return descricao
+
+    def clean_tagline(self):
+        tagline = (self.cleaned_data.get('tagline') or '').strip()
+
+        if len(tagline) < 10:
+            raise forms.ValidationError('A tagline deve conter pelo menos 10 caracteres.')
+
+        return tagline

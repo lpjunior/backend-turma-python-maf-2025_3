@@ -1,5 +1,6 @@
 import logging
 
+import cloudinary.uploader
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
@@ -9,8 +10,8 @@ from django.shortcuts import render, redirect, \
     get_object_or_404
 from django.contrib import messages
 
-from pages.forms import SolicitacaoForm, ClienteForm, OrcamentoForm
-from pages.models import Solicitacao, Cliente, Orcamento
+from pages.forms import SolicitacaoForm, ClienteForm, OrcamentoForm, ProjetoForm
+from pages.models import Solicitacao, Cliente, Orcamento, Projeto
 from pages.utils import enviar_orcamento_email
 
 logger = logging.getLogger(__name__)
@@ -25,7 +26,64 @@ def servicos(request):
     return render(request, 'pages/servicos.html')
 
 def projetos(request):
-    return render(request, 'pages/projetos.html')
+    projetos_db = Projeto.objects.filter(ativo=True)
+    return render(request, 'pages/projetos.html', {'projetos': projetos_db})
+
+@login_required
+@permission_required('pages.view_projeto', raise_exception=True)
+def projetos_admin(request):
+    projetos_db = Projeto.objects.all()
+    return render(request, 'pages/projetos_admin.html', {'projetos': projetos_db})
+
+@login_required
+@permission_required('pages.add_projeto', raise_exception=True)
+def projeto_create(request):
+    form = ProjetoForm(request.POST or None, request.FILES or None)
+
+    if request.method == "POST" and form.is_valid():
+        imagem = request.FILES.get('imagem_file')
+        upload = cloudinary.uploader.upload(imagem)
+
+        projeto = form.save(commit=False)
+        projeto.imagem = upload.get('secure_url')
+        projeto.save()
+
+        return redirect('projetos_admin')
+
+    return render(request, 'pages/projeto_form.html', {'form': form, "acao": "Criar"})
+
+@login_required
+@permission_required('pages.change_projeto', raise_exception=True)
+def projeto_update(request, projeto_id):
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+
+    form = ProjetoForm(request.POST or None, request.FILES or None, instance=projeto)
+
+    if request.method == "POST" and form.is_valid():
+        projeto = form.save(commit=False)
+
+        imagem = request.FILES.get('imagem_file')
+
+        if imagem:
+            upload = cloudinary.uploader.upload(imagem)
+            projeto.imagem = upload.get('secure_url')
+
+        projeto.save()
+
+        return redirect('projetos_admin')
+
+    return render(request, 'pages/projeto_form.html', {'form': form, "acao": "Editar"})
+
+@login_required
+@permission_required('pages.delete_projeto', raise_exception=True)
+def projeto_delete(request, projeto_id):
+    projeto = get_object_or_404(Projeto, id=projeto_id)
+
+    if request.method == "POST":
+        projeto.delete()
+        return redirect('projetos_admin')
+
+    return render(request, 'pages/projeto_confirm_delete.html', {'projeto': projeto})
 
 def depoimentos(request):
     return render(request, 'pages/depoimentos.html')
@@ -173,8 +231,8 @@ def clientes(request):
     return render(request, 'pages/clientes.html', { 'clientes': clientes_qs })
 
 @permission_required('pages.view_cliente', raise_exception=True)
-def cliente_detalhe(request, id_cliente):
-    cliente = get_object_or_404(Cliente, id=id_cliente)
+def cliente_detalhe(request, cliente_id):
+    cliente = get_object_or_404(Cliente, id=cliente_id)
     solicitacoes = cliente.solicitacoes.all().order_by('-data_envio')
 
     return render(
@@ -200,8 +258,8 @@ def cliente_create(request):
     return render(request, 'pages/cliente_form.html', {'form': form, "acao": "Criar"})
 
 @permission_required('pages.change_cliente', raise_exception=True)
-def cliente_update(request, id_cliente):
-    cliente = get_object_or_404(Cliente, id=id_cliente)
+def cliente_update(request, cliente_id):
+    cliente = get_object_or_404(Cliente, id=cliente_id)
 
     if request.method == "POST":
         form = ClienteForm(request.POST, instance=cliente)
@@ -215,8 +273,8 @@ def cliente_update(request, id_cliente):
     return render(request, 'pages/cliente_form.html', {'form': form, "acao": "Editar"})
 
 @permission_required('pages.delete_cliente', raise_exception=True)
-def cliente_delete(request, id_cliente):
-    cliente = get_object_or_404(Cliente, id=id_cliente)
+def cliente_delete(request, cliente_id):
+    cliente = get_object_or_404(Cliente, id=cliente_id)
 
     if request.method == "POST":
         cliente.delete()

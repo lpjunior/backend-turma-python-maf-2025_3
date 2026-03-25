@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+import cloudinary
 from django.contrib import staticfiles
 from dotenv import load_dotenv
 
@@ -98,6 +99,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Cloudinary Config
+cloudinary.config(
+    cloud_name=os.environ.get('CLOUD_NAME'),
+    api_key=os.environ.get('API_KEY'),
+    api_secret=os.environ.get('API_SECRET'),
+    secure=True,
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
