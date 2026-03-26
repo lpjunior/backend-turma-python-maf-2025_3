@@ -205,11 +205,11 @@ class OrcamentoForm(forms.ModelForm):
         }
 
 class ProjetoForm(forms.ModelForm):
-    imagem_file = forms.ImageField(required=True)
+    imagem_file = forms.ImageField(required=False)
 
     class Meta:
         model = Projeto
-        fields = ['titulo', 'descricao', 'tagline', 'categoria']
+        fields = ['titulo', 'descricao', 'tagline', 'categoria', 'ativo']
         widgets = {
             'titulo': forms.TextInput(attrs={
                 'class': 'form-control'
@@ -224,6 +224,23 @@ class ProjetoForm(forms.ModelForm):
                 'class': 'form-select'
             }),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Controle do campo imagem (já existente)
+        if not self.instance or not self.instance.imagem:
+            self.fields['imagem_file'].required = True
+        else:
+            self.fields['imagem_file'].required = False
+
+        # Remove o campo ativo no CREATE
+        if not self.instance or not self.instance.pk:
+            self.fields.pop('ativo')
+        else:
+            self.fields['ativo'].widget.attrs.update({
+                'class': 'form-check-input'
+            })
 
     def clean_titulo(self):
         titulo = (self.cleaned_data.get('titulo') or '').strip()
@@ -248,3 +265,11 @@ class ProjetoForm(forms.ModelForm):
             raise forms.ValidationError('A tagline deve conter pelo menos 10 caracteres.')
 
         return tagline
+
+    def clean_imagem_file(self):
+        imagem = self.cleaned_data.get('imagem_file')
+
+        if not imagem and not self.instance.imagem:
+            raise forms.ValidationError('A imagem é obrigatória.')
+
+        return imagem
