@@ -1,14 +1,14 @@
 import logging
 
 import cloudinary.uploader
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import permission_required
 from django.db import transaction
 from django.db.models import Count
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect, \
     get_object_or_404
-from django.contrib import messages
 
 from pages.forms import SolicitacaoForm, ClienteForm, OrcamentoForm, ProjetoForm
 from pages.models import Solicitacao, Cliente, Orcamento, Projeto
@@ -16,9 +16,6 @@ from pages.utils import enviar_orcamento_email
 
 logger = logging.getLogger(__name__)
 
-# ========================
-#    Páginas Públicas
-# ========================
 def home(request):
     return render(request, 'pages/home.html')
 
@@ -29,13 +26,13 @@ def projetos(request):
     projetos_db = Projeto.objects.filter(ativo=True)
     return render(request, 'pages/projetos.html', {'projetos': projetos_db})
 
-@login_required
+
 @permission_required('pages.view_projeto', raise_exception=True)
 def projetos_admin(request):
     projetos_db = Projeto.objects.all()
     return render(request, 'pages/projetos_admin.html', {'projetos': projetos_db})
 
-@login_required
+
 @permission_required('pages.add_projeto', raise_exception=True)
 def projeto_create(request):
     form = ProjetoForm(request.POST or None, request.FILES or None)
@@ -52,7 +49,7 @@ def projeto_create(request):
 
     return render(request, 'pages/projeto_form.html', {'form': form, "acao": "Criar"})
 
-@login_required
+
 @permission_required('pages.change_projeto', raise_exception=True)
 def projeto_update(request, projeto_id):
     projeto = get_object_or_404(Projeto, id=projeto_id)
@@ -74,7 +71,7 @@ def projeto_update(request, projeto_id):
 
     return render(request, 'pages/projeto_form.html', {'form': form, "acao": "Editar"})
 
-@login_required
+
 @permission_required('pages.delete_projeto', raise_exception=True)
 def projeto_delete(request, projeto_id):
     projeto = get_object_or_404(Projeto, id=projeto_id)
@@ -186,7 +183,7 @@ def erro_403(request, exception=None):
             )
 
         return render(request, 'pages/403.html', status=403)
-    except Exception as e:
+    except Exception:
         logger.warning(
             "Falha ao renderizar página 403 | Usuário: %s | Path: %s | Detalhes do erro: %s",
             request.user.username if request.user.is_authenticated else 'Anônimo',
@@ -199,7 +196,7 @@ def erro_403(request, exception=None):
 # ========================
 #    Gestão, Dashboard
 # ========================
-@login_required
+
 def dashboard(request):
     total_solicitacoes = Solicitacao.objects.count()
     pendentes = Solicitacao.objects.filter(status='pendente').count()

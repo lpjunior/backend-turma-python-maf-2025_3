@@ -346,3 +346,13 @@ Solicitação de Orçamento
 ------------------------------------------------
 
 solicitação (págian de contato) -> cadastra a msg e o cliente -> usuário vincula um orçamento a msg de contato
+
+------------------------------------------------
+
+
+- Permissionamento do Django Auth
+- Permissões automáticas para o modelo, exemplo Cliente:
+    - pages.add_cliente
+    - pages.change_cliente
+    - pages.delete_cliente
+    - pages.view_cliente
