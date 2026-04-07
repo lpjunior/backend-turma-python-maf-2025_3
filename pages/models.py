@@ -1,3 +1,6 @@
+import uuid
+
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 
@@ -117,3 +120,67 @@ class Projeto(models.Model):
 
     def __str__(self):
         return f'{self.titulo} - {self.get_categoria_display()}'
+
+class Depoimento(models.Model):
+    STATUS_CHOICES = [
+        ("pendente", "Pendente"),
+        ("aprovado", "Aprovado"),
+        ("rejeitado", "Rejeitado"),
+    ]
+
+    cliente = models.ForeignKey(
+        Cliente,
+        on_delete=models.CASCADE,
+        related_name="depoimentos",
+    )
+    solicitacao = models.ForeignKey(
+        Solicitacao,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="depoimentos",
+    )
+    token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    nota = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        null=True,
+        blank=True,
+    )
+    nps = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(10)],
+        null=True,
+        blank=True,
+    )
+    comentario = models.TextField(blank=True, default="")
+    anonimizar_nome = models.BooleanField(default=False)
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="pendente",
+    )
+    solicitado_em = models.DateTimeField(null=True, blank=True)
+    respondido_em = models.DateTimeField(null=True, blank=True)
+    moderado_em = models.DateTimeField(null=True, blank=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+    ativo = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = "depoimentos"
+        ordering = ["-respondido_em", "-criado_em"]
+
+    def __str__(self):
+        return f"Depoimento de {self.cliente.nome} - {self.get_status_display()}"
+
+    @property
+    def nome_exibicao(self):
+        if not self.anonimizar_nome:
+            return self.cliente.nome
+
+        partes = self.cliente.nome.split()
+        if not partes:
+            return "Cliente"
+
+        if len(partes) == 1:
+            return f"{partes[0][0]}***"
+
+        return f"{partes[0]} {partes[1][0]}***"

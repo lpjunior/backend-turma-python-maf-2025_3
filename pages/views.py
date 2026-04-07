@@ -1,20 +1,30 @@
+import cloudinary.uploader
 import logging
 
-import cloudinary.uploader
-from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import permission_required
 from django.db import transaction
 from django.db.models import Count
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required, permission_required
+from django.core.cache import cache
 from django.http import HttpResponseForbidden
-from django.shortcuts import render, redirect, \
-    get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 
-from pages.forms import SolicitacaoForm, ClienteForm, OrcamentoForm, ProjetoForm
-from pages.models import Solicitacao, Cliente, Orcamento, Projeto
-from pages.utils import enviar_orcamento_email
+from pages.forms import (
+    ClienteForm,
+    DepoimentoModeracaoForm,
+    DepoimentoRespostaForm,
+    OrcamentoForm,
+    ProjetoForm,
+    SolicitacaoForm,
+)
+from pages.models import Cliente, Depoimento, Orcamento, Projeto, Solicitacao
+from pages.services import enviar_convite_depoimento, enviar_orcamento_email
 
 logger = logging.getLogger(__name__)
+
+
 
 def home(request):
     return render(request, 'pages/home.html')
@@ -82,8 +92,6 @@ def projeto_delete(request, projeto_id):
 
     return render(request, 'pages/projeto_confirm_delete.html', {'projeto': projeto})
 
-def depoimentos(request):
-    return render(request, 'pages/depoimentos.html')
 
 @transaction.atomic
 def contato(request):
@@ -340,3 +348,146 @@ def criar_orcamento(request, solicitacao_id):
         'form': form,
         'solicitacao': solicitacao
     })
+
+def depoimentos(request):
+    depoimentos_qs = cache.get_or_set(
+        "pagina_depoimentos_aprovados",
+        lambda: list(
+            Depoimento.objects.filter(status="aprovado", ativo=True)
+            .select_related("cliente")
+            .order_by("-respondido_em", "-criado_em")[:12]
+        ),
+        300,
+    )
+
+    depoimentos_iniciais = depoimentos_qs[:6]
+    depoimentos_extras = depoimentos_qs[6:12]
+
+    return render(
+        request,
+        "pages/depoimentos.html",
+        {
+            "depoimentos_iniciais": depoimentos_iniciais,
+            "depoimentos_extras": depoimentos_extras,
+            "tem_mais_depoimentos": len(depoimentos_qs) > 6,
+        },
+    )
+
+
+def feedback_publico(request, token):
+    depoimento = get_object_or_404(Depoimento, token=token, ativo=True)
+
+    if depoimento.respondido_em:
+        return render(
+            request,
+            "pages/feedback_sucesso.html",
+            {"depoimento_ja_respondido": True},
+        )
+
+    form = DepoimentoRespostaForm(request.POST or None, instance=depoimento)
+
+    if request.method == "POST" and form.is_valid():
+        depoimento = form.save(commit=False)
+        depoimento.status = "pendente"
+        depoimento.respondido_em = timezone.now()
+        depoimento.save()
+
+        cache.delete("home_depoimentos_aprovados")
+        cache.delete("pagina_depoimentos_aprovados")
+
+        return render(
+            request,
+            "pages/feedback_sucesso.html",
+            {"depoimento_ja_respondido": False},
+        )
+
+    return render(
+        request,
+        "pages/feedback_form.html",
+        {"form": form, "depoimento": depoimento},
+    )
+
+
+@login_required
+@permission_required("pages.view_depoimento", raise_exception=True)
+def depoimentos_admin(request):
+    status = request.GET.get("status", "")
+    depoimentos_qs = Depoimento.objects.select_related("cliente", "solicitacao").all()
+
+    if status:
+        depoimentos_qs = depoimentos_qs.filter(status=status)
+
+    return render(
+        request,
+        "pages/depoimentos_admin.html",
+        {
+            "depoimentos": depoimentos_qs,
+            "status_filtro": status,
+        },
+    )
+
+
+@login_required
+@permission_required("pages.change_depoimento", raise_exception=True)
+def depoimento_moderar(request, depoimento_id):
+    depoimento = get_object_or_404(
+        Depoimento.objects.select_related("cliente", "solicitacao"),
+        id=depoimento_id,
+    )
+    form = DepoimentoModeracaoForm(request.POST or None, instance=depoimento)
+
+    if request.method == "POST" and form.is_valid():
+        depoimento = form.save(commit=False)
+        depoimento.moderado_em = timezone.now()
+        depoimento.save()
+
+        cache.delete("home_depoimentos_aprovados")
+        cache.delete("pagina_depoimentos_aprovados")
+
+        messages.success(request, "Depoimento atualizado com sucesso.")
+        return redirect("depoimentos_admin")
+
+    return render(
+        request,
+        "pages/depoimento_moderar.html",
+        {
+            "depoimento": depoimento,
+            "form": form,
+        },
+    )
+
+
+@login_required
+@permission_required("pages.add_depoimento", raise_exception=True)
+def solicitar_depoimento(request, solicitacao_id):
+    solicitacao = get_object_or_404(
+        Solicitacao.objects.select_related("cliente"),
+        id=solicitacao_id,
+    )
+
+    depoimento, created = Depoimento.objects.get_or_create(
+        solicitacao=solicitacao,
+        defaults={
+            "cliente": solicitacao.cliente,
+            "status": "pendente",
+        },
+    )
+
+    if depoimento.respondido_em:
+        messages.warning(
+            request,
+            "Já existe um depoimento respondido para esta solicitação.",
+        )
+        return redirect("solicitacao_detalhe", solicitacao_id=solicitacao.id)
+
+    depoimento.solicitado_em = timezone.now()
+    depoimento.save(update_fields=["solicitado_em"])
+
+    enviar_convite_depoimento(request, depoimento)
+
+    messages.success(
+        request,
+        "Convite de depoimento enviado com sucesso.",
+    )
+
+    return redirect("solicitacao_detalhe", solicitacao_id=solicitacao.id)

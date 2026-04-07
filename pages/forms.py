@@ -1,7 +1,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from pages.models import Cliente, Solicitacao, Orcamento, Projeto
+
+from pages.models import Cliente, Solicitacao, Orcamento, Projeto, Depoimento
 
 
 class SolicitacaoForm(forms.ModelForm):
@@ -273,3 +274,57 @@ class ProjetoForm(forms.ModelForm):
             raise forms.ValidationError('A imagem é obrigatória.')
 
         return imagem
+
+class DepoimentoRespostaForm(forms.ModelForm):
+    class Meta:
+        model = Depoimento
+        fields = ["nota", "nps", "comentario", "anonimizar_nome"]
+        widgets = {
+            "nota": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "min": 1,
+                    "max": 5,
+                }
+            ),
+            "nps": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "min": 0,
+                    "max": 10,
+                }
+            ),
+            "comentario": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 5,
+                    "placeholder": "Conte como foi sua experiência com a SolarTech",
+                }
+            ),
+            "anonimizar_nome": forms.CheckboxInput(
+                attrs={
+                    "class": "form-check-input",
+                }
+            ),
+        }
+
+    def clean_comentario(self):
+        comentario = (self.cleaned_data.get("comentario") or "").strip()
+
+        if len(comentario.split()) < 5:
+            raise ValidationError("O comentário deve conter pelo menos 5 palavras.")
+
+        return comentario
+
+
+class DepoimentoModeracaoForm(forms.ModelForm):
+    class Meta:
+        model = Depoimento
+        fields = ["status"]
+        widgets = {
+            "status": forms.Select(
+                attrs={
+                    "class": "form-select",
+                }
+            ),
+        }
