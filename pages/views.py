@@ -27,7 +27,26 @@ logger = logging.getLogger(__name__)
 
 
 def home(request):
-    return render(request, 'pages/home.html')
+    depoimentos = cache.get_or_set(
+        "home_depoimentos_aprovados",
+        lambda: list(
+            Depoimento.objects.filter(status="aprovado", ativo=True)
+            .select_related("cliente")
+            .order_by("-respondido_em", "-criado_em")[:6]
+        ),
+        300,
+    )
+
+    projetos_qs = Projeto.objects.filter(ativo=True)[:3]
+
+    return render(
+        request,
+        "pages/home.html",
+        {
+            "depoimentos": depoimentos,
+            "projetos": projetos_qs,
+        },
+    )
 
 def servicos(request):
     return render(request, 'pages/servicos.html')
@@ -298,10 +317,10 @@ def lista_solicitacoes(request):
         .select_related('cliente')
         .order_by('-data_envio')
     )
-    return render(request, 'pages/lista_solicitacoes.html', {'solicitacoes': solicitacoes_qs})
+    return render(request, 'pages/solicitacoes.html', {'solicitacoes': solicitacoes_qs})
 
 @permission_required('pages.view_solicitacao', raise_exception=True)
-def detalhe_solicitacao(request, solicitacao_id):
+def solicitacao_detalhe(request, solicitacao_id):
     solicitacao = get_object_or_404(Solicitacao, id=solicitacao_id)
 
     if solicitacao.status == 'pendente':

@@ -9,7 +9,7 @@ sys.path.append(str(BASE_DIR))
 
 os.environ.setdefault(
     "DJANGO_SETTINGS_MODULE",
-    "senac_site.settings"
+    "config.settings"
 )
 
 app = get_asgi_application()

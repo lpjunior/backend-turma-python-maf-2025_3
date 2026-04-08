@@ -42,7 +42,7 @@
         </div>
       </div>
     </div>
-</div>
+  </div>
 </section>
 
 <section class="py-5">
@@ -55,54 +55,37 @@
       </p>
     </div>
 
-    <div class="row g-4">
+    {% if depoimentos_iniciais or depoimentos_extras %}
+      <div class="row g-4">
 
-      <div class="col-md-6 col-lg-4">
-        <div class="card shadow-sm h-100 border-0">
-          <div class="card-body p-4 d-flex flex-column">
-            <i class="fa-solid fa-quote-left text-warning fs-3 mb-3"></i>
-            <p class="text-muted mb-4">
-              "A instalação foi rápida e a economia já apareceu na primeira conta."
-            </p>
-            <div class="mt-auto pt-3 border-top">
-              <strong class="d-block">Marcos Silva</strong>
-              <small class="text-muted">Cliente SolarTech</small>
-            </div>
+        {% for depoimento in depoimentos_iniciais %}
+          <div class="col-md-6 col-lg-4">
+            {% include "pages/includes/_depoimento_card.html" with depoimento=depoimento %}
           </div>
-        </div>
+        {% endfor %}
+
+        {% for depoimento in depoimentos_extras %}
+          <div class="col-md-6 col-lg-4 extra-depoimento d-none">
+            {% include "pages/includes/_depoimento_card.html" with depoimento=depoimento %}
+          </div>
+        {% endfor %}
+
       </div>
 
-      <div class="col-md-6 col-lg-4">
-        <div class="card shadow-sm h-100 border-0">
-          <div class="card-body p-4 d-flex flex-column">
-            <i class="fa-solid fa-quote-left text-warning fs-3 mb-3"></i>
-            <p class="text-muted mb-4">
-              "Equipe muito profissional e sempre disponível para esclarecer dúvidas."
-            </p>
-            <div class="mt-auto pt-3 border-top">
-              <strong class="d-block">Ana Oliveira</strong>
-              <small class="text-muted">Cliente SolarTech</small>
-            </div>
-          </div>
+      {% if tem_mais_depoimentos %}
+        <div class="text-center mt-4">
+          <button id="btn-ver-mais-depoimentos" class="btn btn-outline-primary">
+            Ver mais
+          </button>
         </div>
-      </div>
+      {% endif %}
 
-      <div class="col-md-6 col-lg-4">
-        <div class="card shadow-sm h-100 border-0">
-          <div class="card-body p-4 d-flex flex-column">
-            <i class="fa-solid fa-quote-left text-warning fs-3 mb-3"></i>
-            <p class="text-muted mb-4">
-              "Excelente atendimento e ótima qualidade na instalação."
-            </p>
-            <div class="mt-auto pt-3 border-top">
-              <strong class="d-block">Carlos Mendes</strong>
-              <small class="text-muted">Cliente SolarTech</small>
-            </div>
-          </div>
-        </div>
+    {% else %}
+      <div class="alert alert-info mb-0" role="status">
+        <i class="fa-solid fa-circle-info me-2"></i>
+        Ainda não há depoimentos aprovados para exibição.
       </div>
-
-    </div>
+    {% endif %}
 
   </div>
 </section>
@@ -180,4 +163,24 @@
   </div>
 </section>
 
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const botao = document.getElementById("btn-ver-mais-depoimentos");
+
+  if (!botao) return;
+
+  botao.addEventListener("click", function () {
+    const extras = document.querySelectorAll(".extra-depoimento");
+
+    extras.forEach(function (item) {
+      item.classList.remove("d-none");
+    });
+
+    botao.remove();
+  });
+});
+</script>
 {% endblock %}

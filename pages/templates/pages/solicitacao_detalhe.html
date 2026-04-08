@@ -4,72 +4,176 @@
 
 {% block content %}
 
-<section class="py-5">
-  <div class="container">
+<section class="container py-5">
 
-    <div class="row g-4">
+  <!-- HEADER -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div>
+      <h1 class="h4 fw-bold mb-1">Detalhe da Solicitação</h1>
+      <p class="text-muted mb-0">
+        Informações completas da solicitação enviada pelo cliente
+      </p>
+    </div>
 
-      <div class="col-lg-8">
-        <div class="card shadow-sm border-0">
-          <div class="card-body p-4">
+    <a href="{% url 'solicitacoes' %}" class="btn btn-outline-secondary">
+      <i class="fa-solid fa-arrow-left me-1"></i>
+      Voltar
+    </a>
+  </div>
 
-            <h1 class="h4 fw-bold mb-4">Detalhe da Solicitação</h1>
+  <div class="row g-4">
 
-            <div class="mb-4">
-              <strong>Cliente:</strong><br>
-              {{ solicitacao.cliente.nome }}<br>
-              <small class="text-muted">{{ solicitacao.cliente.email }}</small>
+    <!-- COLUNA PRINCIPAL -->
+    <div class="col-lg-8">
+
+      <!-- CARD CLIENTE -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+
+            <div>
+              <strong class="fs-5 d-block">
+                {{ solicitacao.cliente.nome }}
+              </strong>
+
+              <div class="small text-muted">
+                <i class="fa-solid fa-envelope me-1"></i>
+                <a href="mailto:{{ solicitacao.cliente.email }}" class="text-decoration-none text-muted">
+                  {{ solicitacao.cliente.email }}
+                </a>
+              </div>
+
+              {% if solicitacao.cliente.telefone %}
+                <div class="small text-muted">
+                  <i class="fa-solid fa-phone me-1"></i>
+                  {{ solicitacao.cliente.telefone }}
+                </div>
+              {% endif %}
             </div>
 
-            <div class="mb-4">
-              <strong>Status:</strong><br>
-              <span class="badge
+            <div class="text-end">
+
+              <span class="badge px-3 py-2 rounded-pill
                 {% if solicitacao.status == 'pendente' %}bg-warning text-dark
                 {% elif solicitacao.status == 'lido' %}bg-info text-dark
                 {% elif solicitacao.status == 'respondido' %}bg-success
-                {% endif %}
-              ">
+                {% endif %}">
                 {{ solicitacao.get_status_display }}
               </span>
-            </div>
 
-            <div>
-              <strong>Mensagem:</strong>
-              <p class="mt-2 mb-0">{{ solicitacao.mensagem }}</p>
+              <div class="small text-muted mt-2">
+                <i class="fa-regular fa-clock me-1"></i>
+                {{ solicitacao.data_envio|date:"d/m/Y H:i" }}
+              </div>
+
             </div>
 
           </div>
+
         </div>
       </div>
 
-      <div class="col-lg-4">
-        <div class="card shadow-sm border-0">
-          <div class="card-body p-4">
+      <!-- CARD MENSAGEM -->
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
 
-            <h2 class="h6 fw-bold mb-3">Orçamento</h2>
+          <h2 class="h6 fw-bold mb-3">
+            <i class="fa-solid fa-message me-2 text-primary"></i>
+            Mensagem do cliente
+          </h2>
 
-            {% if orcamento %}
-              <p><strong>Valor:</strong> R$ {{ orcamento.valor }}</p>
-              <p>{{ orcamento.descricao }}</p>
-            {% else %}
-              <div class="alert alert-warning">
-                Nenhum orçamento criado.
+          <div class="bg-light rounded p-3">
+            <p class="mb-0 text-muted">
+              {{ solicitacao.mensagem }}
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="col-lg-4">
+
+      <!-- ORÇAMENTO -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+
+          <h2 class="h6 fw-bold mb-3">
+            <i class="fa-solid fa-file-invoice-dollar me-2 text-success"></i>
+            Orçamento
+          </h2>
+
+          {% if orcamento %}
+
+            <div class="mb-3">
+              <small class="text-muted">Valor</small>
+              <div class="fs-5 fw-bold text-success">
+                R$ {{ orcamento.valor }}
               </div>
+            </div>
 
-              {% if perms.pages.add_orcamento %}
-                <a href="{% url 'criar_orcamento' solicitacao.id %}" class="btn btn-success w-100">
-                  Criar Orçamento
-                </a>
-              {% endif %}
+            <div class="bg-light rounded p-3">
+              <p class="mb-0 text-muted">
+                {{ orcamento.descricao }}
+              </p>
+            </div>
+
+          {% else %}
+
+            <div class="alert alert-warning mb-3">
+              Nenhum orçamento criado.
+            </div>
+
+            {% if perms.pages.add_orcamento %}
+              <a href="{% url 'criar_orcamento' solicitacao.id %}"
+                 class="btn btn-success w-100">
+                <i class="fa-solid fa-plus me-1"></i>
+                Criar Orçamento
+              </a>
+            {% endif %}
+
+          {% endif %}
+
+        </div>
+      </div>
+
+      <!-- AÇÕES -->
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+
+          <h2 class="h6 fw-bold mb-3">
+            <i class="fa-solid fa-bolt me-2 text-warning"></i>
+            Ações rápidas
+          </h2>
+
+          <div class="d-grid gap-2">
+
+            <a href="mailto:{{ solicitacao.cliente.email }}"
+               class="btn btn-outline-primary">
+              <i class="fa-solid fa-envelope me-1"></i>
+              Enviar email
+            </a>
+
+            {% if perms.pages.add_depoimento %}
+              <a href="{% url 'solicitar_depoimento' solicitacao.id %}"
+                 class="btn btn-primary">
+                <i class="fa-solid fa-paper-plane me-1"></i>
+                Solicitar feedback
+              </a>
             {% endif %}
 
           </div>
+
         </div>
       </div>
 
     </div>
 
   </div>
+
 </section>
 
 {% endblock %}

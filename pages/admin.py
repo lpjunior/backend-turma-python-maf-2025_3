@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Cliente, Solicitacao
+from .models import Cliente, Solicitacao, Orcamento, Projeto, Depoimento
 
 
 @admin.register(Cliente) # Registrar o modelo Pessoa no admin. É equivalente a admin.site.register(Pessoa)
@@ -50,3 +50,32 @@ class SolicitacaoAdmin(admin.ModelAdmin):
         return obj.mensagem[:50] + '...' if len(obj.mensagem) > 50 else obj.mensagem
 
     mensagem_resumida.short_description = 'Mensagem'
+
+
+@admin.register(Orcamento)
+class OrcamentoAdmin(admin.ModelAdmin):
+    list_display = ("titulo", "solicitacao", "valor", "status", "criado_em")
+    search_fields = ("titulo", "solicitacao__cliente__nome")
+    list_filter = ("status", "criado_em")
+
+
+@admin.register(Projeto)
+class ProjetoAdmin(admin.ModelAdmin):
+    list_display = ("titulo", "categoria", "ativo", "criado_em")
+    search_fields = ("titulo", "categoria", "descricao")
+    list_filter = ("categoria", "ativo")
+
+
+@admin.register(Depoimento)
+class DepoimentoAdmin(admin.ModelAdmin):
+    list_display = (
+        "cliente",
+        "solicitacao",
+        "nota",
+        "nps",
+        "status",
+        "respondido_em",
+        "moderado_em",
+    )
+    search_fields = ("cliente__nome", "cliente__email", "comentario")
+    list_filter = ("status", "nota", "anonimizar_nome")

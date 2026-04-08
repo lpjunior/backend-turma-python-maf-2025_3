@@ -156,8 +156,8 @@
 
                         {% if perms.pages.view_solicitacao %}
                             <li class="nav-item">
-                                <a class="nav-link {% if request.resolver_match.url_name == 'lista_solicitacoes' %}active{% endif %}"
-                                   href="{% url 'lista_solicitacoes' %}">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'solicitacoes' %}active{% endif %}"
+                                   href="{% url 'solicitacoes' %}">
                                     <i class="fa-solid fa-file-signature me-1"></i>Solicitações
                                 </a>
                             </li>
@@ -177,6 +177,15 @@
                                 <a class="nav-link {% if request.resolver_match.url_name == 'projetos_admin' %}active{% endif %}"
                                    href="{% url 'projetos_admin' %}">
                                     <i class="fa-solid fa-border-all me-1"></i>Projetos
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% if perms.pages.view_depoimento %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'depoimentos_admin' %}active{% endif %}"
+                                   href="{% url 'depoimentos_admin' %}">
+                                    <i class="fa-solid fa-comments me-1"></i>Depoimentos
                                 </a>
                             </li>
                         {% endif %}

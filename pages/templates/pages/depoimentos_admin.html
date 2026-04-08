@@ -1,0 +1,78 @@
+{% extends "pages/base.html" %}
+
+{% block title %}Gestão de Depoimentos | SolarTech{% endblock %}
+
+{% block content %}
+
+<section class="container my-4">
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+
+      <header class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex align-items-center">
+          <i class="fa-solid fa-comments fa-lg text-primary me-2"></i>
+          <h1 class="h4 mb-0">Gestão de Depoimentos</h1>
+        </div>
+
+        <form method="get" class="d-flex gap-2">
+          <select name="status" class="form-select">
+            <option value="">Todos</option>
+            <option value="pendente" {% if status_filtro == 'pendente' %}selected{% endif %}>Pendente</option>
+            <option value="aprovado" {% if status_filtro == 'aprovado' %}selected{% endif %}>Aprovado</option>
+            <option value="rejeitado" {% if status_filtro == 'rejeitado' %}selected{% endif %}>Rejeitado</option>
+          </select>
+          <button type="submit" class="btn btn-outline-primary">Filtrar</button>
+        </form>
+      </header>
+
+      {% if depoimentos %}
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Nota</th>
+                <th>NPS</th>
+                <th>Status</th>
+                <th>Respondido em</th>
+                <th class="text-end">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for depoimento in depoimentos %}
+                <tr>
+                  <td>{{ depoimento.cliente.nome }}</td>
+                  <td>{{ depoimento.nota|default:"-" }}</td>
+                  <td>{{ depoimento.nps|default:"-" }}</td>
+                  <td>{{ depoimento.get_status_display }}</td>
+                  <td>
+                    {% if depoimento.respondido_em %}
+                      {{ depoimento.respondido_em|date:"d/m/Y H:i" }}
+                    {% else %}
+                      -
+                    {% endif %}
+                  </td>
+                  <td class="text-end">
+                    <a href="{% url 'depoimento_moderar' depoimento.id %}" class="btn btn-sm btn-warning">
+                      Moderar
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="alert alert-info mb-0" role="status">
+          <i class="fa-solid fa-circle-info me-2" aria-hidden="true"></i>
+          Nenhum depoimento encontrado para o filtro selecionado.
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+
+</section>
+
+{% endblock %}

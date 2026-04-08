@@ -12,7 +12,7 @@ urlpatterns = [
     path('contato/', views.contato, name='contato'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
-
+    path("feedback/<uuid:token>/", views.feedback_publico, name="feedback_publico"),
     # ========================
     #   Area administrativa
     # ========================
@@ -38,7 +38,14 @@ urlpatterns = [
     # ========================
     #   Gestão de Solicitações
     # ========================
-    path('gestao/solicitacoes/', views.lista_solicitacoes, name='lista_solicitacoes'),
-    path('gestao/solicitacoes/<int:solicitacao_id>/', views.detalhe_solicitacao, name='detalhe_solicitacao'),
+    path('gestao/solicitacoes/', views.lista_solicitacoes, name='solicitacoes'),
+    path('gestao/solicitacoes/<int:solicitacao_id>/', views.solicitacao_detalhe, name='solicitacao_detalhe'),
     path('gestao/solicitacoes/<int:solicitacao_id>/orcamento', views.criar_orcamento, name='criar_orcamento'),
+
+    # ========================
+    #   Gestão de Depoimentos
+    # ========================
+    path("gestao/solicitacoes/<int:solicitacao_id>/solicitar-depoimento/", views.solicitar_depoimento, name="solicitar_depoimento"),
+    path("gestao/depoimentos/", views.depoimentos_admin, name="depoimentos_admin"),
+    path("gestao/depoimentos/<int:depoimento_id>/moderar/", views.depoimento_moderar, name="depoimento_moderar"),
 ]
